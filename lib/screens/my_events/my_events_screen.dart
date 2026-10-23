@@ -6,6 +6,7 @@ import '../../models/event.dart';
 import '../../models/registration.dart';
 import '../../providers/bookmark_provider.dart';
 import '../../providers/event_provider.dart';
+import '../../providers/profile_provider.dart';
 import '../../providers/registration_provider.dart';
 import '../../widgets/event_card.dart';
 import '../../widgets/glass_card.dart';
@@ -99,10 +100,14 @@ class _MyEventsScreenState extends State<MyEventsScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final regProvider = context.watch<RegistrationProvider>();
+    final profileProvider = context.watch<ProfileProvider>();
     final bookmarkProvider = context.watch<BookmarkProvider>();
     final eventProvider = context.watch<EventProvider>();
 
-    final activeRegistrations = regProvider.activeRegistrations;
+    final currentStudent = profileProvider.currentStudent;
+    final activeRegistrations = currentStudent != null
+        ? regProvider.getRegistrationsForStudent(currentStudent.rollNumber)
+        : regProvider.activeRegistrations;
     final allEvents = eventProvider.allEvents;
 
     // Filter bookmarked events

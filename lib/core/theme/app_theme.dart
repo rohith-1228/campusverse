@@ -87,7 +87,7 @@ class AppTheme {
         thickness: 1,
         space: 24,
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.darkBgSecondary,
         elevation: 8,
         shape: RoundedRectangleBorder(
@@ -189,7 +189,7 @@ class AppTheme {
         thickness: 1,
         space: 24,
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: Colors.white,
         elevation: 8,
         shape: RoundedRectangleBorder(

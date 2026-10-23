@@ -41,10 +41,18 @@ class AppConstants {
 
   // Storage Keys
   static const String keyStudentProfile = 'cv_student_profile';
+  static const String keyStudentAccounts = 'cv_student_accounts';
+  static const String keyUserRole = 'cv_user_role';
   static const String keyRegistrations = 'cv_registrations';
   static const String keyBookmarks = 'cv_bookmarks';
   static const String keyNotifications = 'cv_notifications';
   static const String keyThemeIsDark = 'cv_theme_is_dark';
   static const String keyUseApiBackend = 'cv_use_api_backend';
   static const String keyCustomEvents = 'cv_custom_events';
+
+  // Demo Organizer Credentials
+  static const String demoOrganizerEmail = 'organizer@campusverse.edu';
+  static const String demoOrganizerPassword = 'Organizer@2026';
+  static const String demoOrganizerName = 'Prof. Marcus Vance';
+  static const String demoOrganizerRoleTitle = 'Faculty Event Convener';
 }

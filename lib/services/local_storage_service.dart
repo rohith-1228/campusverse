@@ -16,7 +16,7 @@ class LocalStorageService {
     return LocalStorageService(prefs);
   }
 
-  // ---------------- STUDENT PROFILE ----------------
+  // ---------------- STUDENT PROFILE & ACCOUNTS ----------------
   Future<bool> saveStudent(Student student) async {
     final jsonStr = jsonEncode(student.toJson());
     return _prefs.setString(AppConstants.keyStudentProfile, jsonStr);
@@ -35,6 +35,58 @@ class LocalStorageService {
 
   Future<bool> clearStudent() async {
     return _prefs.remove(AppConstants.keyStudentProfile);
+  }
+
+  Future<bool> saveStudentAccounts(List<Student> accounts) async {
+    final list = accounts.map((s) => s.toJson()).toList();
+    return _prefs.setString(AppConstants.keyStudentAccounts, jsonEncode(list));
+  }
+
+  List<Student> getStudentAccounts() {
+    final jsonStr = _prefs.getString(AppConstants.keyStudentAccounts);
+    if (jsonStr == null || jsonStr.isEmpty) {
+      // Return default presets if none registered yet
+      return List<Student>.from(Student.samplePresets);
+    }
+    try {
+      final decoded = jsonDecode(jsonStr) as List<dynamic>;
+      final list = decoded
+          .map((item) => Student.fromJson(item as Map<String, dynamic>))
+          .toList();
+      return list.isNotEmpty ? list : List<Student>.from(Student.samplePresets);
+    } catch (_) {
+      return List<Student>.from(Student.samplePresets);
+    }
+  }
+
+  Future<bool> registerOrUpdateStudentAccount(Student student) async {
+    final accounts = getStudentAccounts();
+    final normalizedEmail = student.email.trim().toLowerCase();
+    final normalizedRoll = student.rollNumber.trim().toLowerCase();
+
+    final existingIndex = accounts.indexWhere((a) =>
+        a.email.trim().toLowerCase() == normalizedEmail ||
+        a.rollNumber.trim().toLowerCase() == normalizedRoll);
+
+    if (existingIndex != -1) {
+      accounts[existingIndex] = student;
+    } else {
+      accounts.add(student);
+    }
+    return saveStudentAccounts(accounts);
+  }
+
+  // ---------------- USER ROLE ----------------
+  Future<bool> saveUserRole(String role) async {
+    return _prefs.setString(AppConstants.keyUserRole, role);
+  }
+
+  String getUserRole() {
+    return _prefs.getString(AppConstants.keyUserRole) ?? 'student';
+  }
+
+  Future<bool> clearUserRole() async {
+    return _prefs.remove(AppConstants.keyUserRole);
   }
 
   // ---------------- REGISTRATIONS ----------------

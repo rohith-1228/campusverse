@@ -287,7 +287,7 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
 
                     // Department Dropdown
                     DropdownButtonFormField<String>(
-                      value: _selectedDepartment,
+                      initialValue: _selectedDepartment,
                       dropdownColor: isDark ? AppColors.darkBgSecondary : Colors.white,
                       decoration: const InputDecoration(
                         labelText: 'Department / Major *',
@@ -313,7 +313,7 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
 
                     // Year Dropdown
                     DropdownButtonFormField<String>(
-                      value: _selectedYear,
+                      initialValue: _selectedYear,
                       dropdownColor: isDark ? AppColors.darkBgSecondary : Colors.white,
                       decoration: const InputDecoration(
                         labelText: 'Year of Study *',
@@ -376,23 +376,26 @@ class _EventRegistrationScreenState extends State<EventRegistrationScreen> {
                             : const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: SwitchListTile(
-                        value: _agreedToTerms,
-                        onChanged: (val) => setState(() => _agreedToTerms = val),
-                        activeColor: AppColors.primaryLight,
-                        title: Text(
-                          'I agree to the Event Guidelines & Code of Conduct *',
-                          style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w600,
-                            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: SwitchListTile(
+                          value: _agreedToTerms,
+                          onChanged: (val) => setState(() => _agreedToTerms = val),
+                          activeThumbColor: AppColors.primaryLight,
+                          title: Text(
+                            'I agree to the Event Guidelines & Code of Conduct *',
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                            ),
                           ),
-                        ),
-                        subtitle: Text(
-                          'I understand this generates an official collegiate pass.',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
+                          subtitle: Text(
+                            'I understand this generates an official collegiate pass.',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
+                            ),
                           ),
                         ),
                       ),

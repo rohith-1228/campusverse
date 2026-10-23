@@ -1,32 +1,32 @@
 # CampusVerse — Premium College Event Management Application
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.27.4-02569B?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.6.2-0175C2?logo=dart)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.27+-02569B?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.6+-0175C2?logo=dart)](https://dart.dev)
 [![State](https://img.shields.io/badge/State-Provider%206.1-blue)](https://pub.dev/packages/provider)
-[![Tests](https://img.shields.io/badge/Tests-20%2F20%20Passing-brightgreen)](https://flutter.dev)
+[![Tests](https://img.shields.io/badge/Tests-42%2F42%20Passing-brightgreen)](https://flutter.dev)
 [![Design](https://img.shields.io/badge/Design-Glassmorphism%20M3-7C3AED)](https://m3.material.io)
 
-**CampusVerse** is a modern, cross-platform **College Event Management Application** built using **Flutter**, **Dart**, and **Material 3**. Engineered for academic mini-project demonstration and college project expos, it features a custom **Dark Glassmorphism UI** system, full **Provider** state management, REST API integration with an offline-first mock fallback, verified digital ticket admission passes with custom **2D QR code matrices**, and persistent local storage.
+**CampusVerse** is a modern, cross-platform **College Event Management Application** built using **Flutter**, **Dart**, and **Material 3**. Engineered for academic mini-project demonstration and college project expos, it features a custom **Dark Glassmorphism UI** system, full **Provider** state management, separated Student and Organizer authentication workflows, authentic ISO **2D QR code tickets**, gate admission scanning with duplicate check-in prevention, and persistent local storage.
 
 ---
 
 ## Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Key Features](#key-features)
-3. [Technology Stack & Packages](#technology-stack--packages)
-4. [Design Direction & Glassmorphism System](#design-direction--glassmorphism-system)
-5. [Application Architecture](#application-architecture)
-6. [Folder Structure](#folder-structure)
-7. [Installation & Prerequisites](#installation--prerequisites)
-8. [How to Run the Application](#how-to-run-the-application)
-9. [Running the Test Suite](#running-the-test-suite)
-10. [State Management with Provider](#state-management-with-provider)
-11. [Navigation & Routing Flow](#navigation--routing-flow)
-12. [REST API Integration & Offline Mock Switching](#rest-api-integration--offline-mock-switching)
-13. [Customizing Themes & Colors](#customizing-themes--colors)
-14. [Mandatory Syllabus Mapping (Weeks 1 to 9)](#mandatory-syllabus-mapping-weeks-1-to-9)
-15. [Limitations & Future Enhancements](#limitations--future-enhancements)
+1. [Project Overview](#1-project-overview)
+2. [Key Features](#2-key-features)
+3. [User Roles & Demo Authentication](#3-user-roles--demo-authentication)
+4. [QR Ticket Generation & Gate Verification](#4-qr-ticket-generation--gate-verification)
+5. [Layout & Internal Scrolling Architecture](#5-layout--internal-scrolling-architecture)
+6. [Developer Settings & REST API Integration](#6-developer-settings--rest-api-integration)
+7. [Technology Stack & Packages](#7-technology-stack--packages)
+8. [Design Direction & Glassmorphism System](#8-design-direction--glassmorphism-system)
+9. [Application Architecture](#9-application-architecture)
+10. [Folder Structure](#10-folder-structure)
+11. [How to Run the Application](#11-how-to-run-the-application)
+12. [Running Flutter Analysis & Test Suite](#12-running-flutter-analysis--test-suite)
+13. [Step-by-Step QA & Evaluation Workflows](#13-step-by-step-qa--evaluation-workflows)
+14. [Mandatory Syllabus Mapping (Weeks 1 to 9)](#14-mandatory-syllabus-mapping-weeks-1-to-9)
+15. [Academic Scope & Limitations](#15-academic-scope--limitations)
 
 ---
 
@@ -34,92 +34,180 @@
 
 Colleges host dozens of technical hackathons, coding workshops, cultural evenings, sports meets, and venture pitches every semester. Students frequently struggle with scattered Google Forms, lost confirmation emails, and cumbersome gate check-ins.
 
-**CampusVerse** solves this by delivering a unified, polished mobile experience where students can:
-- **Discover** featured campus events, hackathons, and workshops categorized cleanly.
-- **Search & Filter** events in real time by keywords, timeline (Upcoming/Past), and sorting criteria.
-- **Inspect Detailed Agendas**, venue details, speaker panels, and real-time seat availability.
-- **Register Seamlessly** with validated forms that automatically prevent duplicate signups.
-- **Generate Digital Admission Passes** equipped with dynamic **2D QR matrix verification codes** and perforated ticket aesthetics.
-- **Bookmark & Track Events** across dedicated tabs (Registered, Saved, Completed) with persistent local storage.
-- **Switch Contexts** using a demo Organizer Dashboard to create, edit, and delete events.
+**CampusVerse** solves this by delivering a unified, polished mobile experience where:
+- **Students** can discover campus events, inspect schedules and agendas, register seamlessly with duplicate prevention, view their personal digital passes, and access verified QR tickets.
+- **Organizers** have a dedicated, protected administrative dashboard to create and edit campus events, inspect live attendee rosters, search attendees, and scan or manually verify tickets at admission gates with duplicate check-in prevention.
 
 ---
 
 ## 2. Key Features
 
-- **Splash Screen**: Animated brand entrance with glowing radial orb backdrop and automated session routing.
-- **Onboarding Carousel**: Multi-slide visual introduction explaining event discovery, verified ticket QR check-ins, and schedule reminders.
-- **Student Demo Authentication**: Clean academic demo login with single-click preset student profiles (Alex Chen - CSE, Sophia Patel - ECE, David Miller - IT), avatar picker, and local session persistence.
-- **Home / Discover Hub**:
-  - Personalized greeting with student avatar and college department.
-  - Notification bell with unread badge counter.
+- **Splash & Onboarding**: Animated brand entrance with glowing radial orb backdrop and automated session routing.
+- **Dual-Role Authentication Portal**:
+  - Separate tabs for **Student Access** and **Organizer Access**.
+  - **Unlimited Student Account Creation** with full form validation, email normalization, and duplicate detection.
+  - Returning student login by College Email or University Roll Number.
+  - Quick 1-click sample student profiles for rapid evaluation.
+  - Protected Organizer authentication with published demo credentials and 1-click evaluator login.
+- **Discover & Explore Hub**:
+  - Personalized student greeting with avatar and department badge.
   - Instant live keyword search bar.
-  - Horizontal scrolling category filter chips with active gradient feedback.
-  - Featured Event spotlight glass card with gradient lighting.
-  - Horizontal carousel for flagship summits.
-  - Vertical upcoming events stream with live seat capacity progress bars and bookmark toggles.
-- **Explore Screen**:
-  - Comprehensive multi-parameter filtering (All Timelines, Upcoming Only, Past Events).
-  - Multi-criteria sorting (Earliest Date, Latest Date, Most Popular, Largest Capacity).
-  - Adaptive responsive grid that scales dynamically across mobile (1 column), tablet (2 columns), and desktop web (3 columns).
-  - Empty state with reset actions.
-- **Event Details Screen**:
+  - Horizontal scrolling category filter chips with active gradient lighting.
+  - Multi-parameter filtering (Upcoming, Past, All Timelines) and sorting (Date, Popularity, Capacity).
+  - Responsive layout dynamically adapting across mobile, tablet, and web browsers.
+- **Event Details & Validated Registration**:
   - Hero image animation smoothly transitioning between event cards and detail view.
-  - Organizer identity pod with contact avatar.
-  - Venue, duration, and seat progress overview.
-  - Chronological schedule & speaker agenda cards.
-  - Eligibility criteria badge and admission pricing.
-  - Sticky bottom glass bar adapting based on registration status.
-- **Validated Event Registration Form**:
-  - Fields for Student Name, College Email, Roll Number, Department dropdown, Year dropdown, Phone, Team Name, and Code of Conduct acceptance switch.
-  - Strict validation preventing empty fields, malformed emails, invalid phone numbers, or unchecked terms.
+  - Organizer identity pod, venue overview, agenda breakdown, and real-time seat availability.
+  - Validated registration modal: ensures required fields, valid email, matching passwords, and terms acceptance.
   - Duplicate registration protection: prevents students from registering twice for the same event.
 - **Digital Admission Pass (TicketCard)**:
   - Perforated circular side notches with a dashed tear-off line divider.
-  - High-contrast custom-painted **2D QR code matrix** generated deterministically from registration data.
-  - Unique verified Registration ID (e.g., `CV-2026-9481`).
-  - Pass cancellation and offline wallet saving options.
+  - Real ISO-compliant **2D QR code matrix** generated via `qr_flutter`.
+  - Unique verified Registration ID (e.g. `CV-2026-9481`).
+  - Admission status badges (`CONFIRMED`, `CHECKED IN`, `CANCELLED`).
+  - Registration cancellation with confirmation dialog.
 - **My Events Center**:
-  - Three organized tabs: **Registered** (active upcoming passes), **Saved** (bookmarked favorites), and **Completed** (past events).
-  - One-tap modal to inspect digital QR pass.
-  - Safe registration cancellation flow with confirmation dialog.
-- **Notification Center**:
-  - Timestamped notifications (success alerts, deadline reminders, venue updates).
-  - Read/unread dot indicators and "Mark all as read" capability.
-- **Profile & Settings**:
-  - Academic credentials display and live state-derived counters (Registered Events & Saved Events).
-  - Edit Profile modal dialog.
-  - Instant Theme Switcher (Dark Glassmorphism vs Clean Light Material 3).
-  - Live REST API backend toggle with custom endpoint configuration.
-  - Organizer Dashboard portal.
-  - Demo session reset and switch student option.
-- **Organizer Dashboard (Demo)**:
-  - Create new collegiate events with title, category, venue, capacity, description, and image.
-  - Edit existing event parameters.
-  - Delete events.
-  - View verified student attendee registries and registration capacity statistics.
+  - Displays exclusively the active signed-in student's registrations and tickets.
+  - Organized tabs: **Registered** (active upcoming passes), **Saved** (bookmarked favorites), and **Completed** (past events).
+- **Organizer Dashboard & Management**:
+  - Protected by role-aware guards (student accounts are denied administrative privileges).
+  - Stat cards: Total Events, Upcoming, Signups, Checked In.
+  - Event creation, editing, and deletion.
+  - Live attendee registration roster with instant search and filter controls.
+  - Direct attendance status toggles and link to Gate Scanner.
+- **Organizer Ticket Scanner & Gate Entry**:
+  - Live camera QR scanning with visual aim frame (`mobile_scanner`).
+  - Dedicated **Manual / Demo Lookup** tab for testing without camera hardware.
+  - Gate admission verification states: `VALID`, `ALREADY CHECKED IN`, `CANCELLED`, `EVENT MISMATCH`, and `UNRECOGNIZED`.
+  - Duplicate check-in prevention: prevents a scanned ticket from being reused.
+- **Dedicated Developer Settings**:
+  - Separated from the student profile to maintain a professional user experience.
+  - Offline Mock Mode vs Live REST API Mode switch.
+  - Configurable remote endpoint base URL with validation.
+  - Real HTTP diagnostic connection ping measuring round-trip network latency in milliseconds.
 
 ---
 
-## 3. Technology Stack & Packages
+## 3. User Roles & Demo Authentication
 
-- **Framework**: Flutter SDK (v3.27.4)
-- **Language**: Dart (v3.6.2)
-- **Design Language**: Material 3 with Custom Glassmorphism
+CampusVerse enforces strict role separation between student attendees and faculty/student organizers.
+
+### Role Separation & Protection Matrix
+
+| Capability | Student Role | Organizer Role |
+|---|:---:|:---:|
+| Browse & Search Events | Yes | Yes |
+| View Event Agendas & Details | Yes | Yes |
+| Register for Events | Yes | No (Student Workflow) |
+| View Personal Tickets & QR Codes | Yes (Own Only) | No |
+| Save / Bookmark Events | Yes | Yes |
+| Create, Edit & Delete Events | **Denied** | Yes |
+| View Attendee Rosters & Roll Numbers | **Denied** | Yes |
+| Access Gate Ticket Scanner | **Denied** | Yes |
+| Check In Attendees at Venue Doors | **Denied** | Yes |
+
+*Note: Client-side role checks are implemented for demonstration purposes. In a production deployment with a cloud backend, authorization must also be validated server-side on every request.*
+
+### Demo Credentials for Academic Evaluation
+
+#### 1. Organizer Demo Account
+- **Access Route**: Login Screen → Switch to **Organizer** tab.
+- **Email**: `organizer@campusverse.edu`
+- **Password**: `Organizer@2026`
+- **Quick Evaluation**: A **1-Click Organizer Demo Login** button is available on the Organizer Login tab.
+
+#### 2. Sample Student Presets (Optional Quick-Fill)
+- **Alex Chen**: CSE, 3rd Year (`alex.chen@campusverse.edu`, Roll: `CS-2024-001`)
+- **Sophia Patel**: ECE, 2nd Year (`sophia.patel@campusverse.edu`, Roll: `EC-2025-042`)
+- **David Miller**: IT, 4th Year (`david.m@campusverse.edu`, Roll: `IT-2023-118`)
+
+#### 3. Unlimited Student Account Registration
+- **Access Route**: Login Screen → Student tab → Tap **"Create New Student Account"**.
+- Enter: Full Name, College Email, Roll/Registration Number, Department, Year of Study, Phone Number, Password, and Confirmation.
+- Validates field formats, ensures passwords match, and rejects duplicate emails or roll numbers.
+- Once created, returning students can log in using either their **Email** or **Roll Number** along with their password.
+
+---
+
+## 4. QR Ticket Generation & Gate Verification
+
+### Ticket Architecture & QR Payload
+
+When a student registers for an event:
+1. A unique, collision-resistant Registration ID is generated: `CV-<YEAR>-<RANDOM_ID>` (e.g. `CV-2026-4891`).
+2. A compact, standard payload is produced:
+   ```text
+   CAMPUSVERSE:TICKET:CV-2026-4891
+   ```
+3. **Student Privacy**: No passwords, private tokens, or unnecessary personal data are encoded into the QR payload.
+4. `qr_flutter` renders the authentic ISO/IEC 18004 QR code matrix onto the digital pass.
+5. The registration record is saved into persistent storage, linking the student and event.
+
+### Gate Scanner & Verification Logic
+
+When an organizer scans a QR code (or enters the ticket ID manually in the **Manual / Demo** tab):
+1. The scanner extracts the registration identifier from the payload.
+2. The registration repository retrieves the active record from storage.
+3. Verification checks:
+   - **Invalid/Empty Format**: Returns `UNRECOGNIZED TICKET`.
+   - **Non-Existent Record**: Returns `NOT FOUND`.
+   - **Cancelled Pass**: Returns `CANCELLED TICKET` (cannot be admitted).
+   - **Event Mismatch**: When the organizer selects a specific event gate, scanning a pass for a different campus event flags `EVENT MISMATCH`.
+   - **Already Checked In**: If the ticket was previously admitted, the scanner displays `ALREADY CHECKED IN` with the exact admission timestamp and rejects repeated entry.
+   - **Valid Pass**: Displays student name, roll number, department, and event title, with a green **"Confirm Gate Admission & Check In"** action.
+4. Once checked in, `isCheckedIn` is set to `true`, `checkedInAt` is recorded, and the state is persisted.
+
+---
+
+## 5. Layout & Internal Scrolling Architecture
+
+To prevent internal scrollbar conflicts, clipping, and RenderFlex overflow errors:
+- **Natural Primary Scrolling**: All form screens, dashboards, and detail views use a single parent `SingleChildScrollView` or top-level `ListView`.
+- **Keyboard Resilience**: Forms wrap their scroll areas with `SafeArea` and natural padding so fields remain fully visible and scrollable when the virtual keyboard appears.
+- **Bottom Navigation Clearance**: The main application shell ensures page content does not clip behind the floating glass bottom navigation bar.
+- **Cross-Device Adaptability**: Layouts scale smoothly on compact phones, large tablets, and desktop browsers without hardcoded fixed heights.
+
+---
+
+## 6. Developer Settings & REST API Integration
+
+To preserve a clean, professional profile for normal students, developer tools are housed in a dedicated **Developer Settings** screen (accessible via a subtle shortcut in the student profile or the `/developer-settings` route).
+
+### Features
+- **Offline Mock vs Live REST API Switch**:
+  - **Mock Mode**: Zero-latency responses using realistic collegiate events.
+  - **Live Mode**: Actively communicates with remote microservices via HTTP.
+- **Remote API Base URL Configuration**:
+  - Validates `http://` and `https://` schemas and host format before saving.
+  - Fallback and "Reset to Default URL" options.
+- **Live HTTP Diagnostic Connection Test**:
+  - Pings the remote endpoint (`/events`) with a 5-second timeout.
+  - Validates HTTP 200 responses.
+  - Displays round-trip latency in milliseconds (`ms`).
+  - Gracefully surfaces connection errors without crashing.
+
+---
+
+## 7. Technology Stack & Packages
+
+- **Framework**: Flutter SDK (v3.27+)
+- **Language**: Dart (v3.6+)
+- **Design System**: Material 3 with Custom Dark Glassmorphism
 - **State Management**: `provider: ^6.1.5`
-- **Networking**: `http: ^1.6.0`
+- **QR Code Generation**: `qr_flutter: ^4.1.0`
+- **Barcode & QR Scanning**: `mobile_scanner: ^7.4.2`
+- **HTTP Networking**: `http: ^1.6.0`
 - **Local Persistence**: `shared_preferences: ^2.5.3`
-- **Date Utilities**: `intl: ^0.20.2`
-- **Icons**: Material Design Icons (`Icons.*`)
-- **Testing**: `flutter_test` (Unit tests, Provider tests, Widget tests)
+- **Date Formatting**: `intl: ^0.20.2`
+- **Testing**: `flutter_test` (Unit, Widget, and Integration tests)
 
 ---
 
-## 4. Design Direction & Glassmorphism System
+## 8. Design Direction & Glassmorphism System
 
-CampusVerse implements a custom glassmorphism design system built upon Flutter's `BackdropFilter` and `ImageFilter.blur`:
+CampusVerse implements a glassmorphism design system using Flutter's `BackdropFilter` and `ImageFilter.blur`:
 
-```
+```text
 ┌────────────────────────────────────────────────────────┐
 │  Dark Background: #090D1A  (Deep Midnight Navy)        │
 │  Surface Card:    #1E293B  (Slate 800 with 15% alpha)  │
@@ -132,22 +220,22 @@ CampusVerse implements a custom glassmorphism design system built upon Flutter's
 └────────────────────────────────────────────────────────┘
 ```
 
-Reusable design components:
-- `GlassCard`: Encapsulates `ClipRRect`, `BackdropFilter`, translucent background color, and subtle gradient border.
-- `GradientOrb`: Ambient radial gradient backgrounds creating soft lighting depth behind glass panels.
-- `CategoryChip`: `AnimatedContainer` with dynamic gradient fills and active indicator badges.
-- `CustomBottomNavigation`: Floating glass pill navigation bar with active tab glow effects.
-- `TicketCard`: Perforated admission ticket with custom QR code matrix.
+Reusable visual components:
+- `GlassCard`: Reusable glassmorphic surface with translucent color, background blur, and hairline borders.
+- `GradientOrb`: Ambient radial gradient lighting creating depth behind cards.
+- `CategoryChip`: Animated pill with vibrant gradient selection states.
+- `CustomBottomNavigation`: Floating glass pill navigation bar with active glow.
+- `TicketCard`: Realistic event pass with circular cutouts, dashed tear line, and verified QR code.
 
 ---
 
-## 5. Application Architecture
+## 9. Application Architecture
 
-CampusVerse adheres to clean separation of concerns:
+CampusVerse adheres to clean architectural separation:
 
 ```mermaid
 flowchart TD
-    UI[UI Screens & Widgets] --> Providers[Provider State Management]
+    UI[UI Presentation Layer - Screens & Widgets] --> Providers[Provider State Management]
     Providers --> Repositories[Repository Layer]
     Repositories --> StorageService[LocalStorageService - SharedPreferences]
     Repositories --> ApiService[ApiService - HTTP REST Client]
@@ -155,271 +243,230 @@ flowchart TD
     StorageService --> LocalDB[(Device Storage)]
 ```
 
-- **Models**: Plain Dart classes (`Event`, `Student`, `Registration`, `AppNotification`) with immutable fields and robust `fromJson` / `toJson` serialization.
-- **Services**: Low-level drivers (`ApiService` for network requests, `LocalStorageService` for `SharedPreferences`).
-- **Repositories**: Business logic abstractions (`EventRepository` coordinating local mock vs REST API; `RegistrationRepository` managing ticket creation, duplicate checks, and cancellations).
-- **Providers**: `ChangeNotifier` classes exposing reactive state to the UI via `context.watch()` and `context.read()`.
-- **Screens & Widgets**: Pure presentation layer responding reactively to state updates.
+- **Models**: Immutable Dart data classes (`Event`, `Student`, `Registration`, `AppNotification`).
+- **Services**: Low-level drivers (`ApiService` for HTTP requests, `LocalStorageService` for `SharedPreferences`).
+- **Repositories**: Business logic abstractions (`EventRepository`, `RegistrationRepository`).
+- **Providers**: `ChangeNotifier` state containers (`ProfileProvider`, `EventProvider`, `RegistrationProvider`, `BookmarkProvider`, `NotificationProvider`, `ThemeProvider`).
+- **Screens & Widgets**: Reactive presentation layer.
 
 ---
 
-## 6. Folder Structure
+## 10. Folder Structure
 
-```
-c:/Users/L2-55/Desktop/flutter/
-├── lib/
-│   ├── main.dart                      # App entry point, services setup, MultiProvider registration
-│   ├── app.dart                       # MaterialApp configuration, routing, and theme bindings
-│   ├── core/
-│   │   ├── constants/
-│   │   │   ├── app_colors.dart        # Hex palettes, gradients, dark/light definitions
-│   │   │   └── app_constants.dart     # Categories, departments, academic years, storage keys
-│   │   ├── theme/
-│   │   │   └── app_theme.dart         # Material 3 ThemeData (darkTheme & lightTheme)
-│   │   └── utils/
-│   │       ├── date_formatter.dart    # Formatters using the intl package
-│   │       └── responsive.dart        # Breakpoint calculations and Responsive layout builder
-│   ├── models/
-│   │   ├── app_notification.dart      # Notification data model
-│   │   ├── event.dart                 # Event & AgendaItem data models
-│   │   ├── registration.dart          # Event Registration data model
-│   │   └── student.dart               # Student participant data model
-│   ├── services/
-│   │   ├── api_service.dart           # HTTP client with timeouts and custom exceptions
-│   │   └── local_storage_service.dart # SharedPreferences JSON wrapper
-│   ├── repositories/
-│   │   ├── event_repository.dart      # Hybrid repository (Mock dataset + REST API)
-│   │   └── registration_repository.dart # Ticket generator & duplicate check logic
-│   ├── providers/
-│   │   ├── bookmark_provider.dart     # Bookmarked events state
-│   │   ├── event_provider.dart        # Events, search query, category, and sorting state
-│   │   ├── notification_provider.dart # In-app notification alerts state
-│   │   ├── profile_provider.dart      # Active student session state
-│   │   ├── registration_provider.dart # Registrations state and cancellation
-│   │   └── theme_provider.dart        # Dark / light theme mode toggle state
-│   ├── screens/
-│   │   ├── auth/
-│   │   │   └── demo_login_screen.dart # Student demo login with preset profiles
-│   │   ├── event_details/
-│   │   │   └── event_details_screen.dart # Hero image, full details, agenda, and register action
-│   │   ├── explore/
-│   │   │   └── explore_screen.dart    # Filter modal, search, and responsive grid
-│   │   ├── home/
-│   │   │   └── home_screen.dart       # Discover hub, hero card, categories, and event streams
-│   │   ├── main_shell.dart            # Root shell hosting floating glass bottom navigation
-│   │   ├── my_events/
-│   │   │   └── my_events_screen.dart  # Registered tickets, saved items, and completed events
-│   │   ├── notifications/
-│   │   │   └── notifications_screen.dart # Notification center with mark-read actions
-│   │   ├── onboarding/
-│   │   │   └── onboarding_screen.dart # 3-step carousel with animated indicators
-│   │   ├── organizer/
-│   │   │   └── organizer_dashboard_screen.dart # Organizer event CRUD & attendee inspection
-│   │   ├── profile/
-│   │   │   └── profile_screen.dart    # Student profile, stats, theme toggle, and API settings
-│   │   ├── registration/
-│   │   │   ├── event_registration_screen.dart # Validated participant registration form
-│   │   │   └── registration_success_screen.dart # Confirmation pass with QR matrix
-│   │   └── splash/
-│   │       └── splash_screen.dart     # Animated entrance and session routing
-│   └── widgets/
-│       ├── category_chip.dart         # Animated category pill with icons
-│       ├── custom_bottom_navigation.dart # Floating glass bottom navigation bar
-│       ├── error_view.dart            # Friendly error view with retry action
-│       ├── event_card.dart            # Vertical & horizontal glass event cards
-│       ├── glass_card.dart            # Core glassmorphic BackdropFilter container
-│       ├── gradient_orb.dart          # Ambient decorative radial lighting
-│       ├── loading_view.dart          # Shimmering loading indicator
-│       ├── qr_matrix_painter.dart     # CustomPainter 2D QR matrix generator
-│       └── ticket_card.dart           # Perforated ticket with barcode & status badge
-├── test/
-│   ├── test_helpers/
-│   │   └── mock_http_overrides.dart   # Mock HTTP overrides for isolated widget tests
-│   ├── unit/
-│   │   ├── bookmark_provider_test.dart# Bookmark state operations test
-│   │   ├── event_filtering_test.dart  # Search, category, and sorting logic test
-│   │   ├── event_model_test.dart      # JSON parsing and seat capacity test
-│   │   ├── registration_test.dart     # Duplicate prevention and pass generation test
-│   │   └── theme_provider_test.dart   # Theme mode switching test
-│   ├── widget/
-│   │   ├── home_screen_test.dart      # Home screen rendering test
-│   │   ├── registration_form_test.dart# Form validation test
-│   │   └── ticket_card_test.dart      # Admission pass QR rendering test
-│   └── widget_test.dart               # End-to-end application boot & navigation test
-└── pubspec.yaml                       # Dependencies and assets configuration
+```text
+lib/
+├── main.dart                                  # Main bootstrap, MultiProvider registration
+├── app.dart                                   # MaterialApp routing & theme bindings
+├── core/
+│   ├── constants/
+│   │   ├── app_colors.dart                    # Hex palettes, gradients, dark/light themes
+│   │   └── app_constants.dart                 # Categories, departments, demo credentials
+│   ├── theme/
+│   │   └── app_theme.dart                     # Material 3 ThemeData (dark & light)
+│   └── utils/
+│       ├── date_formatter.dart                # Date & time string formatting
+│       └── responsive.dart                    # Screen size breakpoints
+├── models/
+│   ├── event.dart                             # Event model with JSON serialization
+│   ├── student.dart                           # Student model, password, sample presets
+│   ├── registration.dart                      # Registration model, check-in status, QR data
+│   └── notification.dart                      # In-app notifications
+├── services/
+│   ├── api_service.dart                       # HTTP client for REST backend
+│   └── local_storage_service.dart             # SharedPreferences persistence layer
+├── repositories/
+│   ├── event_repository.dart                  # Event coordination (Mock vs Live)
+│   └── registration_repository.dart           # Ticket generation, QR parsing, check-in logic
+├── providers/
+│   ├── profile_provider.dart                  # Student registration, auth & organizer login
+│   ├── event_provider.dart                    # Search, category filters, CRUD operations
+│   ├── registration_provider.dart             # Registrations, ticket verification, check-in
+│   ├── bookmark_provider.dart                 # Saved events state
+│   ├── notification_provider.dart             # Notification state
+│   └── theme_provider.dart                    # Dark/light theme state
+├── screens/
+│   ├── auth/
+│   │   └── demo_login_screen.dart             # Dual-role Student / Organizer portal
+│   ├── home/
+│   │   └── home_screen.dart                   # Discover hub, categories, upcoming events
+│   ├── explore/
+│   │   └── explore_screen.dart                # Filterable event grid
+│   ├── event_details/
+│   │   └── event_details_screen.dart          # Event agenda, speakers, registration action
+│   ├── registration/
+│   │   └── event_registration_screen.dart     # Validated registration form modal
+│   ├── my_events/
+│   │   └── my_events_screen.dart              # Active student's tickets and bookmarks
+│   ├── organizer/
+│   │   ├── organizer_dashboard_screen.dart    # Role-protected administrative dashboard
+│   │   └── ticket_scanner_screen.dart         # QR camera scanner & manual verification
+│   ├── settings/
+│   │   └── developer_settings_screen.dart     # Dedicated REST API config & ping
+│   └── profile/
+│       └── profile_screen.dart                # Student profile, theme toggle, logout
+└── widgets/
+    ├── glass_card.dart                        # Reusable glassmorphic surface
+    ├── ticket_card.dart                       # Perforated admission ticket pass
+    └── qr_matrix_painter.dart                 # High-contrast 2D QR code renderer
 ```
 
 ---
 
-## 7. Installation & Prerequisites
+## 11. How to Run the Application
 
 ### Prerequisites
-- **Flutter SDK**: Version 3.20.0 or newer (tested on Flutter 3.27.4).
-- **Dart SDK**: Version 3.4.0 or newer (bundled with Flutter).
-- **Operating System**: Windows, macOS, or Linux.
-- **Target Environments**: Android device/emulator, Chrome/Edge browser (Web), or Windows Desktop.
+- Flutter SDK installed and accessible in `PATH`.
+- Google Chrome browser (for Flutter Web) or an Android/iOS emulator/device.
 
-### Setup Instructions
-1. Open PowerShell / Terminal in the project root:
-   ```powershell
-   cd c:\Users\L2-55\Desktop\flutter
-   ```
-2. Fetch required dependencies:
-   ```powershell
+### Running Commands
+
+1. **Install Dependencies**:
+   ```bash
    flutter pub get
    ```
-3. Verify that the Flutter environment reports no issues:
-   ```powershell
-   flutter analyze
+
+2. **Run in Chrome (Flutter Web)**:
+   ```bash
+   flutter run -d chrome
+   ```
+
+3. **Run on an Android / iOS Device or Emulator**:
+   ```bash
+   flutter run
    ```
 
 ---
 
-## 8. How to Run the Application
+## 12. Running Flutter Analysis & Test Suite
 
-You can launch CampusVerse on Chrome Web, Windows Desktop, or an Android device:
-
-### Option A: Run on Google Chrome (Recommended for fast Expo demonstration)
-```powershell
-flutter run -d chrome
+### 1. Static Code Analysis
+Run the Flutter analyzer to confirm code health:
+```bash
+flutter analyze
 ```
+*Current result: **No issues found!***
 
-### Option B: Run on Microsoft Edge
-```powershell
-flutter run -d edge
-```
-
-### Option C: Run as Native Windows Desktop App
-```powershell
-flutter run -d windows
-```
-
-### Option D: Run on Connected Android Device or Emulator
-```powershell
-flutter run -d android
-```
-
----
-
-## 9. Running the Test Suite
-
-The test suite contains **20 unit and widget tests** validating all business logic, duplicate checks, models, and UI rendering.
-
-To run all tests:
-```powershell
+### 2. Automated Test Suite
+Execute the comprehensive test suite covering authentication, duplicate prevention, ticket verification, gate admission, role guards, and UI responsiveness:
+```bash
 flutter test
 ```
+*Current result: **All 42 tests passed!***
 
-### Test Coverage Highlights:
-- `test/unit/event_model_test.dart`: Validates JSON serialization, `availableSeats`, `isFull`, and `seatsPercentage`.
-- `test/unit/registration_test.dart`: Confirms registration creation, verifies duplicate rejection via `RegistrationException`, and tests cancellation.
-- `test/unit/event_filtering_test.dart`: Tests category filtering, substring keyword search, and popularity sorting.
-- `test/unit/bookmark_provider_test.dart`: Tests adding, toggling, and persisting bookmarks.
-- `test/unit/theme_provider_test.dart`: Tests toggling dark/light mode and saving preferences.
-- `test/widget/ticket_card_test.dart`: Confirms ticket card rendering and custom QR matrix paint.
-- `test/widget/registration_form_test.dart`: Verifies form inline validation for empty names and email checks.
-- `test/widget/home_screen_test.dart`: Tests personalized greeting, search input, and category chips.
-- `test/widget_test.dart`: Full end-to-end integration test verifying splash entrance, branding, and navigation.
+### Test Suite Breakdown
 
----
-
-## 10. State Management with Provider
-
-CampusVerse uses Provider to manage state without bloated architecture:
-
-| Provider | Responsibilities | Key Methods |
-|---|---|---|
-| `EventProvider` | Loads events, manages search queries, category filters, timeline filters, sorting, and API mode toggles. | `loadEvents()`, `setSearchQuery()`, `selectCategory()`, `setSortBy()`, `clearFilters()`, `addCustomEvent()` |
-| `RegistrationProvider`| Tracks registered events, prevents duplicate roll numbers, generates admission passes, and handles cancellations. | `registerStudent()`, `cancelRegistration()`, `isRegistered()`, `getRegistration()` |
-| `BookmarkProvider` | Manages student bookmarks and saved events list. | `toggleBookmark()`, `isBookmarked()`, `removeBookmark()` |
-| `ThemeProvider` | Manages theme mode (Dark Glassmorphism vs Clean Light) across the application. | `toggleTheme()`, `setDarkMode()` |
-| `NotificationProvider`| Handles in-app simulated event notifications and unread badge counters. | `markAsRead()`, `markAllAsRead()`, `addNotification()` |
-| `ProfileProvider` | Manages the active student identity and credentials. | `login()`, `updateProfile()`, `logout()` |
-
-All providers inherit from `ChangeNotifier` and trigger reactive UI rebuilds using `notifyListeners()`. Widgets consume state using `context.watch<T>()` for reactive rebuilding or `context.read<T>()` for one-time method calls.
+| Test Suite | File | Tests | Focus Areas |
+|---|---|:---:|---|
+| **Authentication & Profile** | `test/unit/auth_provider_test.dart` | 9 | Student registration, duplicate email/roll checks, login, profile edit, organizer demo auth |
+| **Ticket & Gate Verification** | `test/unit/ticket_verification_test.dart` | 8 | Unique ticket generation, QR parsing, gate admission, event matching, duplicate check-in prevention |
+| **Registrations & Duplicates** | `test/unit/registration_test.dart` | 3 | Event registration, duplicate prevention, registration cancellation |
+| **Event Filtering & Search** | `test/unit/event_filtering_test.dart` | 5 | Category filters, keyword search, popularity sorting, filter reset |
+| **Event Model Serialization** | `test/unit/event_model_test.dart` | 3 | JSON parsing, serialization, capacity calculations |
+| **Bookmark State** | `test/unit/bookmark_provider_test.dart` | 2 | Bookmark toggling, persistent storage |
+| **Theme State** | `test/unit/theme_provider_test.dart` | 3 | Dark glassmorphism default, theme toggle, persistence |
+| **Organizer Role Guard (UI)** | `test/widget/organizer_role_guard_test.dart` | 3 | Student access denial screen, organizer dashboard rendering, manual scanner lookup |
+| **Home Screen (UI)** | `test/widget/home_screen_test.dart` | 3 | Personalized greeting, search bar, category chips |
+| **Registration Form (UI)** | `test/widget/registration_form_test.dart` | 2 | Field validation, terms acceptance checkbox |
+| **Ticket Card (UI)** | `test/widget/ticket_card_test.dart` | 1 | Digital pass layout, QR code presentation |
+| **App Shell (Integration)** | `test/widget_test.dart` | 1 | Full application boot and navigation |
 
 ---
 
-## 11. Navigation & Routing Flow
+## 13. Step-by-Step QA & Evaluation Workflows
 
-CampusVerse implements two levels of navigation:
+Follow these workflows to evaluate all implemented features:
 
-1. **Declarative Named Routes** in `lib/app.dart`:
-   - `/` → `SplashScreen`
-   - `/onboarding` → `OnboardingScreen`
-   - `/login` → `DemoLoginScreen`
-   - `/home` → `MainShell(initialIndex: 0)`
-   - `/explore` → `MainShell(initialIndex: 1)`
-   - `/my-events` → `MainShell(initialIndex: 2)`
-   - `/profile` → `MainShell(initialIndex: 3)`
-   - `/notifications` → `NotificationsScreen`
-   - `/organizer` → `OrganizerDashboardScreen`
-2. **Imperative Push & Modal Navigation**:
-   - `Navigator.push` with custom `PageRouteBuilder` fade transitions for `EventDetailsScreen` and `EventRegistrationScreen`.
-   - `showModalBottomSheet` for inspecting digital QR tickets and filter bottom sheets.
-   - `Navigator.pushAndRemoveUntil` when completing registration or logging out to reset the navigation stack cleanly.
+### Workflow 1: Unlimited Student Registration & Login
+1. Launch the application.
+2. If already logged in, navigate to **Profile** (bottom navigation tab 4) and tap **"Log Out Student Account"**.
+3. On the Login screen (Student tab), tap **"Create New Student Account"**.
+4. Fill in:
+   - Full Name: `Maya Lin`
+   - College Email: `maya.lin@campusverse.edu`
+   - University Roll Number: `CS-2026-88`
+   - Department: `Computer Science & Engineering`
+   - Year: `2nd Year (Sophomore)`
+   - Phone: `+1 555-0188`
+   - Password: `Password@123`
+   - Confirm Password: `Password@123`
+5. Tap **"Create Account & Sign In"**.
+6. Verify that Maya Lin is registered and redirected to the Home screen with her name in the top greeting.
+7. Return to Profile, tap **"Log Out Student Account"**, and log back in using `maya.lin@campusverse.edu` (or `CS-2026-88`) and `Password@123`.
 
----
+### Workflow 2: Event Registration & Unique QR Ticket Generation
+1. In the Home or Explore tab, select an event (e.g. **"HackCampus 2026"**).
+2. Tap **"Register for Event"**.
+3. Review pre-filled student details, check the Code of Conduct terms, and tap **"Confirm Registration"**.
+4. Observe the confirmed registration pass with its unique **Registration ID** (`CV-2026-XXXX`) and authentic **2D QR code**.
+5. Navigate to **My Events** (bottom navigation tab 3).
+6. Verify that the registered event appears under the **Registered** tab, and tap to reopen the digital ticket pass.
 
-## 12. REST API Integration & Offline Mock Switching
+### Workflow 3: Dedicated Organizer Login & Role Guards
+1. Log out of the student account via **Profile** → **Log Out**.
+2. Select the **Organizer** tab at the top of the Login screen.
+3. Observe the displayed demo credentials (`organizer@campusverse.edu` / `Organizer@2026`).
+4. Tap **"1-Click Organizer Demo Login"** (or enter the credentials and tap "Sign In as Organizer").
+5. Observe the **Organizer Dashboard**:
+   - Welcome banner: `Authenticated: Prof. Marcus Vance (Faculty Event Convener)`.
+   - Statistics: Total Events, Upcoming, Signups, Checked In.
+   - List of managed events with live signup counts.
+   - Live Attendee Roster with instant search and filter controls.
 
-### REST API Service Layer (`lib/services/api_service.dart`)
-CampusVerse includes a real network service layer using Dart's `http` package:
-- `fetchEvents()`: Performs `GET $baseUrl/events` with an 8-second timeout, JSON decoding, and status code verification.
-- `fetchEventById(id)`: Performs `GET $baseUrl/events/:id`.
-- `registerEvent(eventId, payload)`: Performs `POST $baseUrl/events/:id/register` with JSON body payload.
-- `ApiException`: Custom exception class providing human-readable network error messages.
+### Workflow 4: QR Ticket Gate Scanning & Duplicate Check-in Prevention
+1. On the Organizer Dashboard, tap **"Open QR Gate Scanner"** (or the QR icon in the top AppBar).
+2. Switch to the **"Manual / Demo"** tab.
+3. Notice the quick-fill sample ticket chips listing all active registrations in the database.
+4. Tap any active ticket chip (or type the Registration ID from Workflow 2).
+5. Tap **"Verify"**:
+   - Status badge shows: `VALID ADMISSION TICKET` in green.
+   - Student name, roll number, and event title are displayed.
+6. Tap **"Confirm Gate Admission & Check In"**:
+   - Status transitions to `ATTENDED / CHECKED IN`.
+7. Tap **"Verify"** again on the same ticket:
+   - Notice that the gate verification rejects repeated entry with `ALREADY CHECKED IN` and records the admission timestamp.
+8. Test invalid tickets: Enter `CV-INVALID-999` and tap **"Verify"** to observe `UNRECOGNIZED TICKET`.
 
-### Switching Between Mock & Live API
-In **Profile & Settings**:
-1. Toggle the **Live REST API Mode** switch:
-   - When **OFF (default)**: The application runs completely offline using a local dataset of 8 realistic campus events.
-   - When **ON**: The application queries the remote REST API endpoint. If unreachable or offline, it falls back to the local repository without crashing.
-2. Tap **Configure API Endpoint URL** to point CampusVerse to any real Node.js, Python, or Go backend endpoint (e.g. `http://localhost:5000/api/v1`).
-
----
-
-## 13. Customizing Themes & Colors
-
-All colors and styles are centralized:
-- **Colors & Gradients**: [lib/core/constants/app_colors.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/core/constants/app_colors.dart)
-  - `darkBg`, `primaryGradient`, `accentGradient`, `electricBlue`.
-- **Material 3 Theme Settings**: [lib/core/theme/app_theme.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/core/theme/app_theme.dart)
-  - `AppTheme.darkTheme`: Dark glass background, glowing elevated cards, dark inputs.
-  - `AppTheme.lightTheme`: Clean slate background with crisp indigo accents.
-- **Glassmorphism Blur & Corner Radii**: [lib/widgets/glass_card.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/widgets/glass_card.dart)
-  - Adjust `blur` (default: 16.0) or `borderRadius` (default: 22.0).
+### Workflow 5: Developer Settings & HTTP Diagnostic Test
+1. While logged in as a student, navigate to **Profile**.
+2. Tap **"Developer & API Configuration"** at the bottom of the profile.
+3. Observe the dedicated configuration screen:
+   - Toggle between **Offline Mock Mode** and **Live REST API Mode**.
+   - Review or edit the Remote API Base URL.
+   - Tap **"Test Connection"**:
+     - The app performs an HTTP GET request with a 5-second timeout.
+     - Displays diagnostic status and round-trip latency in milliseconds (`ms`).
 
 ---
 
 ## 14. Mandatory Syllabus Mapping (Weeks 1 to 9)
 
-This application satisfies every concept in the academic Flutter syllabus:
+This application satisfies every concept in the academic Flutter curriculum:
 
 | Syllabus Module | Concepts Covered | Implementation in CampusVerse |
 |---|---|---|
-| **Week 1 — Setup & Dart Basics** | Dart syntax, variables, classes, null-safety, control structures. | Validated in [lib/models/event.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/models/event.dart), [lib/models/student.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/models/student.dart), and repository getters. |
-| **Week 2 — Exploring Flutter Widgets** | `Text`, `Image`, `Container`, `Icon`, `Row`, `Column`, `Stack`. | Found throughout [lib/widgets/event_card.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/widgets/event_card.dart) and [lib/screens/splash/splash_screen.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/screens/splash/splash_screen.dart). |
-| **Week 3 — Layouts & UI Design** | `Expanded`, `Flexible`, nested widgets, reusable components. | Demonstrated in [lib/widgets/ticket_card.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/widgets/ticket_card.dart) and [lib/widgets/glass_card.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/widgets/glass_card.dart). |
-| **Week 4 — Responsive Design** | `MediaQuery`, `LayoutBuilder`, responsive breakpoints. | Implemented in [lib/core/utils/responsive.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/core/utils/responsive.dart) and [lib/screens/explore/explore_screen.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/screens/explore/explore_screen.dart). |
-| **Week 5 — Navigation & Routing** | `Navigator.push`, `Navigator.pop`, passing model objects, named routes. | Implemented in [lib/app.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/app.dart), [lib/screens/main_shell.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/screens/main_shell.dart), and [lib/screens/home/home_screen.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/screens/home/home_screen.dart). |
-| **Week 6 — State Management & Theming** | `StatelessWidget`, `StatefulWidget`, `Provider`, `ChangeNotifier`, `ThemeData`. | Implemented across [lib/providers/](file:///c:/Users/L2-55/Desktop/flutter/lib/providers/) and [lib/core/theme/app_theme.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/core/theme/app_theme.dart). |
-| **Week 7 — Forms & API Integration** | `TextFormField`, dropdowns, switches, form validation, `http` REST calls, JSON parsing. | Implemented in [lib/screens/registration/event_registration_screen.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/screens/registration/event_registration_screen.dart) and [lib/services/api_service.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/services/api_service.dart). |
-| **Week 8 — Animations & Testing** | `AnimatedContainer`, `Hero`, `CustomPainter`, unit and widget tests. | Implemented in [lib/widgets/category_chip.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/widgets/category_chip.dart), [lib/widgets/qr_matrix_painter.dart](file:///c:/Users/L2-55/Desktop/flutter/lib/widgets/qr_matrix_painter.dart), and [test/](file:///c:/Users/L2-55/Desktop/flutter/test/). |
-| **Week 9 — Mini Project** | Multi-screen application, offline persistence, full user journey. | Complete end-to-end working application across all 10 core screens. |
+| **Week 1 — Setup & Dart Basics** | Dart syntax, null-safety, classes, enums, control structures. | Models (`Event`, `Student`, `Registration`), `TicketVerificationStatus` enum. |
+| **Week 2 — Exploring Flutter Widgets** | `Text`, `Image`, `Container`, `Icon`, `Row`, `Column`, `Stack`. | Custom widgets (`EventCard`, `TicketCard`, `CategoryChip`). |
+| **Week 3 — Layouts & UI Design** | `Expanded`, `Flexible`, nested widgets, reusable components. | `GlassCard`, `TicketCard`, single-scroll layouts avoiding overflow. |
+| **Week 4 — Responsive Design** | `MediaQuery`, `LayoutBuilder`, responsive breakpoints. | Responsive grid in `ExploreScreen`, `Responsive` utility breakpoints. |
+| **Week 5 — Navigation & Routing** | `Navigator.push`, named routes, role-based route guards. | Routing in `lib/app.dart`, role guards in `OrganizerDashboardScreen`. |
+| **Week 6 — State Management & Theming** | `ChangeNotifier`, `Provider`, `ThemeData`, dark/light modes. | Six Providers (`Profile`, `Event`, `Registration`, `Bookmark`, `Notification`, `Theme`). |
+| **Week 7 — Forms & API Integration** | `TextFormField`, validation, dropdowns, switches, `http` REST client. | `EventRegistrationScreen`, `DemoLoginScreen`, `DeveloperSettingsScreen`. |
+| **Week 8 — Custom Painting & Testing** | `CustomPainter`, QR generation, Unit & Widget test suites. | `QrImageView` (`qr_flutter`), 42 comprehensive unit and widget tests. |
+| **Week 9 — Mini Project Integration** | Multi-screen application, persistence, end-to-end user journeys. | Complete student & organizer workflows with `SharedPreferences` persistence. |
 
 ---
 
-## 15. Limitations & Future Enhancements
+## 15. Academic Scope & Limitations
 
-### Current Prototype Limitations
-- **Simulated Authentication**: Uses demo student profiles saved locally in `SharedPreferences` rather than an OAuth/JWT server.
-- **In-App Notifications**: Local notification queue stored on device; not connected to Firebase Cloud Messaging (FCM).
-- **Camera QR Scanner**: Generates authentic verified QR codes on admission tickets; scanning via physical camera requires a device camera hardware plugin (`mobile_scanner`).
+CampusVerse is engineered specifically for academic project evaluations, code reviews, and project expos:
 
-### Future Enhancements
-- Integration with Firebase Authentication & Cloud Firestore.
-- Google Calendar / Apple Calendar event synchronization.
-- Live push notifications via Firebase Cloud Messaging.
-- Camera-based barcode/QR scanner for event organizers to check in attendees at venue doors.
-- Payment gateway integration (Razorpay / Stripe) for paid college concert passes.
+1. **Local Device Persistence**:
+   - Data is persisted on the current client device using `SharedPreferences`.
+   - Records (student accounts, custom events, registrations, check-in timestamps) survive application restarts on the same device.
+   - For multi-device gate synchronization, connect the app to a shared REST API endpoint using the **Developer Settings** screen.
+2. **Client-Side Role Authorization**:
+   - Role checks are enforced on the client to present distinct student and organizer user experiences.
+   - In a production environment with cloud storage, role authorization must also be validated server-side on every API endpoint.
+3. **Hardware Camera Support**:
+   - Live camera scanning utilizes `mobile_scanner` and works on physical mobile devices with camera permissions enabled.
+   - For web and emulator environments where camera access is unavailable or restricted, the **Manual / Demo Lookup** tab provides full verification and check-in capabilities.

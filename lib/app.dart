@@ -8,6 +8,8 @@ import 'screens/main_shell.dart';
 import 'screens/notifications/notifications_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/organizer/organizer_dashboard_screen.dart';
+import 'screens/organizer/ticket_scanner_screen.dart';
+import 'screens/settings/developer_settings_screen.dart';
 import 'screens/splash/splash_screen.dart';
 
 class CampusVerseApp extends StatelessWidget {
@@ -34,6 +36,8 @@ class CampusVerseApp extends StatelessWidget {
         '/profile': (context) => const MainShell(initialIndex: 3),
         '/notifications': (context) => const NotificationsScreen(),
         '/organizer': (context) => const OrganizerDashboardScreen(),
+        '/scanner': (context) => const TicketScannerScreen(),
+        '/developer-settings': (context) => const DeveloperSettingsScreen(),
       },
     );
   }

@@ -4,14 +4,14 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../../models/student.dart';
 import '../../providers/bookmark_provider.dart';
-import '../../providers/event_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../providers/registration_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/gradient_orb.dart';
 import '../auth/demo_login_screen.dart';
-import '../organizer/organizer_dashboard_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../settings/developer_settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -52,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedDept,
+                  initialValue: selectedDept,
                   decoration: const InputDecoration(labelText: 'Department'),
                   items: AppConstants.departments.map((d) {
                     return DropdownMenuItem(value: d, child: Text(d, style: const TextStyle(fontSize: 12)));
@@ -63,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedYear,
+                  initialValue: selectedYear,
                   decoration: const InputDecoration(labelText: 'Year of Study'),
                   items: AppConstants.academicYears.map((y) {
                     return DropdownMenuItem(value: y, child: Text(y, style: const TextStyle(fontSize: 12)));
@@ -125,66 +125,10 @@ class ProfileScreen extends StatelessWidget {
       children: const [
         Text(
           'CampusVerse is a modern, premium College Event Management platform built with Flutter & Material 3.\n\n'
-          'Designed for academic mini-project demonstration, featuring Glassmorphism UI, Provider state architecture, REST API integration with offline mock fallback, and verified QR admission passes.',
+          'Designed for academic evaluation, featuring Dark Glassmorphism UI, Provider state architecture, verified QR admission passes, role-based student and organizer workflows, and offline mock persistence.',
           style: TextStyle(fontSize: 13),
         ),
       ],
-    );
-  }
-
-  void _showApiSettingsDialog(BuildContext context) {
-    final eventProvider = context.read<EventProvider>();
-    final urlController = TextEditingController(text: eventProvider.apiUrl);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? AppColors.darkBgSecondary : Colors.white,
-        title: const Text('REST API Settings'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Configure the remote REST API endpoint for campus events:',
-              style: TextStyle(fontSize: 13),
-            ),
-            const SizedBox(height: 14),
-            TextField(
-              controller: urlController,
-              decoration: const InputDecoration(
-                labelText: 'API Base URL',
-                hintText: 'https://api.yourcampus.edu/v1',
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'When enabled, events are fetched via the http package. When disabled or unreachable, rich local sample events are used automatically.',
-              style: TextStyle(
-                fontSize: 11.5,
-                color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              eventProvider.setCustomApiUrl(urlController.text.trim());
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('API URL updated!')),
-              );
-            },
-            child: const Text('Save URL'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -195,9 +139,9 @@ class ProfileScreen extends StatelessWidget {
     final regProvider = context.watch<RegistrationProvider>();
     final bookmarkProvider = context.watch<BookmarkProvider>();
     final themeProvider = context.watch<ThemeProvider>();
-    final eventProvider = context.watch<EventProvider>();
 
     final student = profileProvider.currentStudent ?? Student.defaultDemoStudent;
+    final myRegistrations = regProvider.getRegistrationsForStudent(student.rollNumber);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
@@ -216,13 +160,13 @@ class ProfileScreen extends StatelessWidget {
           SafeArea(
             bottom: false,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 110),
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 120),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Title
                   Text(
-                    'Student Profile & Settings',
+                    'Student Profile',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
@@ -249,7 +193,7 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             Container(
                               padding: const EdgeInsets.all(3),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 gradient: AppColors.primaryGradient,
                               ),
@@ -350,7 +294,7 @@ class ProfileScreen extends StatelessWidget {
                                   color: AppColors.primaryLight, size: 28),
                               const SizedBox(height: 8),
                               Text(
-                                '${regProvider.count}',
+                                '${myRegistrations.length}',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w900,
@@ -359,7 +303,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Registered Events',
+                                'My Registered Events',
                                 style: TextStyle(
                                   fontSize: 11.5,
                                   color: isDark
@@ -408,7 +352,7 @@ class ProfileScreen extends StatelessWidget {
 
                   // App Settings Section
                   Text(
-                    'Preferences & Integrations',
+                    'Preferences & Experience',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
@@ -442,84 +386,29 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const Divider(height: 1),
 
-                        // REST API Toggle
-                        SwitchListTile(
-                          value: eventProvider.useApiBackend,
-                          onChanged: (val) => eventProvider.setUseApiBackend(val),
-                          secondary: Icon(
-                            Icons.cloud_sync_rounded,
-                            color: eventProvider.useApiBackend
-                                ? AppColors.success
-                                : AppColors.warning,
-                          ),
-                          title: const Text('Live REST API Mode',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                          subtitle: Text(
-                            eventProvider.useApiBackend
-                                ? 'Fetching from: ${eventProvider.apiUrl}'
-                                : 'Active: Standalone Offline Mock Repository',
-                            style: const TextStyle(fontSize: 11.5),
-                          ),
-                        ),
-                        const Divider(height: 1),
-
                         ListTile(
-                          leading: const Icon(Icons.settings_ethernet_rounded,
-                              color: AppColors.electricBlue),
-                          title: const Text('Configure API Endpoint URL',
+                          leading: const Icon(Icons.notifications_outlined,
+                              color: AppColors.secondaryLight),
+                          title: const Text('Notifications Center',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                          trailing: const Icon(Icons.chevron_right_rounded),
-                          onTap: () => _showApiSettingsDialog(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-
-                  // Academic & Organizer Section
-                  Text(
-                    'Academic Expo & Organizer Tools',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  GlassCard(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.secondary.withAlpha((0.2 * 255).round()),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Icon(Icons.admin_panel_settings_rounded,
-                                color: AppColors.secondaryLight, size: 20),
-                          ),
-                          title: const Text('Organizer Dashboard (Demo)',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                          subtitle: const Text('Create, edit, delete campus events & inspect attendee counts',
+                          subtitle: const Text('View campus event alerts & pass confirmations',
                               style: TextStyle(fontSize: 11.5)),
-                          trailing: const Icon(Icons.arrow_forward_rounded, size: 18),
+                          trailing: const Icon(Icons.chevron_right_rounded),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const OrganizerDashboardScreen(),
+                                builder: (_) => const NotificationsScreen(),
                               ),
                             );
                           },
                         ),
                         const Divider(height: 1),
+
                         ListTile(
                           leading: const Icon(Icons.info_outline_rounded,
                               color: AppColors.primaryLight),
-                          title: const Text('About CampusVerse & Syllabus Mapping',
+                          title: const Text('About CampusVerse & Academic Mapping',
                               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                           trailing: const Icon(Icons.chevron_right_rounded),
                           onTap: () => _showAboutDialog(context),
@@ -527,9 +416,34 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 18),
 
-                  // Reset Demo Session Button
+                  // Developer Diagnostics Link (Restricted Area)
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const DeveloperSettingsScreen(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.terminal_rounded, size: 16, color: AppColors.electricBlue),
+                      label: const Text(
+                        'Developer & REST API Settings',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          color: AppColors.electricBlue,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Logout Student Account Button
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isDark
@@ -542,9 +456,9 @@ class ProfileScreen extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text('Reset Demo Session?'),
+                          title: const Text('Log Out Student Account?'),
                           content: const Text(
-                            'This will log out the current demo student and return to the onboarding screen.',
+                            'Are you sure you want to log out? You can switch to another student profile or register a new one.',
                           ),
                           actions: [
                             TextButton(
@@ -565,14 +479,14 @@ class ProfileScreen extends StatelessWidget {
                                   );
                                 }
                               },
-                              child: const Text('Reset & Log Out'),
+                              child: const Text('Log Out'),
                             ),
                           ],
                         ),
                       );
                     },
                     icon: const Icon(Icons.logout_rounded, size: 18),
-                    label: const Text('Switch Student / Reset Demo Session'),
+                    label: const Text('Log Out Student Account'),
                   ),
                 ],
               ),

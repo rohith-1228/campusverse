@@ -64,19 +64,40 @@ class TicketCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha((0.25 * 255).round()),
+                      color: registration.isCancelled
+                          ? AppColors.error
+                          : (registration.isAttended
+                              ? AppColors.success
+                              : Colors.white.withAlpha((0.25 * 255).round())),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      registration.status.toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          registration.isCancelled
+                              ? Icons.cancel_rounded
+                              : (registration.isAttended
+                                  ? Icons.check_circle_rounded
+                                  : Icons.verified_rounded),
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          registration.isCancelled
+                              ? 'CANCELLED'
+                              : (registration.isAttended ? 'CHECKED IN' : 'CONFIRMED'),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -191,15 +212,53 @@ class TicketCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    'Scan at venue registration desk for immediate verified entry',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                  if (registration.isAttended)
+                    Container(
+                      margin: const EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.success.withAlpha((0.15 * 255).round()),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.success, width: 0.8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 14),
+                          const SizedBox(width: 6),
+                          Text(
+                            registration.checkedInAt != null
+                                ? 'Admitted • ${DateFormatter.formatShortDate(registration.checkedInAt!)}'
+                                : 'Admitted at Event Desk',
+                            style: const TextStyle(
+                              color: AppColors.success,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else if (registration.isCancelled)
+                    Text(
+                      'This admission pass is cancelled and not valid for entry.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.error,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  else
+                    Text(
+                      'Scan at venue registration desk for immediate verified entry',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      ),
                     ),
-                  ),
-                  if (onCancel != null && registration.isConfirmed) ...[
+                  if (onCancel != null && registration.isConfirmed && !registration.isAttended) ...[
                     const SizedBox(height: 16),
                     TextButton.icon(
                       onPressed: onCancel,

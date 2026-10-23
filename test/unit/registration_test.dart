@@ -53,7 +53,7 @@ void main() {
       expect(reg.status, 'confirmed');
       expect(reg.teamName, 'Innovators');
       expect(reg.registrationId.startsWith('CV-'), true);
-      expect(reg.qrCodeData.contains('CS-101'), true);
+      expect(reg.qrCodeData.contains(reg.registrationId), true);
 
       expect(repo.isRegistered('event-test-100', 'CS-101'), true);
     });

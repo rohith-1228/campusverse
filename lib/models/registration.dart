@@ -10,6 +10,8 @@ class Registration {
   final String? teamName;
   final DateTime registeredAt;
   final String status; // 'confirmed', 'attended', 'cancelled'
+  final bool isCheckedIn;
+  final DateTime? checkedInAt;
   final String qrCodeData;
 
   Registration({
@@ -22,13 +24,19 @@ class Registration {
     this.teamName,
     required this.registeredAt,
     this.status = 'confirmed',
+    this.isCheckedIn = false,
+    this.checkedInAt,
     required this.qrCodeData,
   });
 
   bool get isConfirmed => status == 'confirmed';
   bool get isCancelled => status == 'cancelled';
+  bool get isAttended => status == 'attended' || isCheckedIn;
 
   factory Registration.fromJson(Map<String, dynamic> json) {
+    final statusStr = json['status'] as String? ?? 'confirmed';
+    final checkedIn = json['isCheckedIn'] as bool? ?? (statusStr == 'attended');
+
     return Registration(
       registrationId: json['registrationId'] as String? ?? 'CV-000',
       eventId: json['eventId'] as String? ?? '',
@@ -42,7 +50,11 @@ class Registration {
       registeredAt: json['registeredAt'] != null
           ? DateTime.parse(json['registeredAt'] as String)
           : DateTime.now(),
-      status: json['status'] as String? ?? 'confirmed',
+      status: statusStr,
+      isCheckedIn: checkedIn,
+      checkedInAt: json['checkedInAt'] != null
+          ? DateTime.parse(json['checkedInAt'] as String)
+          : null,
       qrCodeData: json['qrCodeData'] as String? ?? '',
     );
   }
@@ -58,6 +70,8 @@ class Registration {
       if (teamName != null) 'teamName': teamName,
       'registeredAt': registeredAt.toIso8601String(),
       'status': status,
+      'isCheckedIn': isCheckedIn,
+      if (checkedInAt != null) 'checkedInAt': checkedInAt!.toIso8601String(),
       'qrCodeData': qrCodeData,
     };
   }
@@ -72,6 +86,8 @@ class Registration {
     String? teamName,
     DateTime? registeredAt,
     String? status,
+    bool? isCheckedIn,
+    DateTime? checkedInAt,
     String? qrCodeData,
   }) {
     return Registration(
@@ -84,6 +100,8 @@ class Registration {
       teamName: teamName ?? this.teamName,
       registeredAt: registeredAt ?? this.registeredAt,
       status: status ?? this.status,
+      isCheckedIn: isCheckedIn ?? this.isCheckedIn,
+      checkedInAt: checkedInAt ?? this.checkedInAt,
       qrCodeData: qrCodeData ?? this.qrCodeData,
     );
   }
