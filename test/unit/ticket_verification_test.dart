@@ -195,5 +195,33 @@ void main() {
       expect(studentBRegs.length, 1);
       expect(studentBRegs.first.student.rollNumber, 'IT-2024-042');
     });
+
+    test('should generate collision-free unique registration IDs across large volume of registrations', () async {
+      final generatedIds = <String>{};
+      const registrationCount = 100;
+
+      for (int i = 0; i < registrationCount; i++) {
+        final student = Student(
+          name: 'Student $i',
+          email: 'student$i@campusverse.edu',
+          rollNumber: 'BATCH-2026-${i.toString().padLeft(3, '0')}',
+          department: 'Engineering',
+          yearOfStudy: '1st Year',
+          phone: '+1 555-00$i',
+        );
+
+        final reg = await repo.register(
+          event: event1,
+          student: student,
+        );
+
+        expect(reg.registrationId.startsWith('CV-'), true);
+        expect(generatedIds.contains(reg.registrationId), false,
+            reason: 'Collision detected for registration ID: ${reg.registrationId}');
+        generatedIds.add(reg.registrationId);
+      }
+
+      expect(generatedIds.length, registrationCount);
+    });
   });
 }

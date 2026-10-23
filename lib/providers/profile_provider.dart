@@ -31,11 +31,20 @@ class ProfileProvider extends ChangeNotifier {
   void _loadProfile() {
     _accounts = _storageService.getStudentAccounts();
     _userRole = _storageService.getUserRole();
-    _currentStudent = _storageService.getStudent();
+
+    final sessionRoll = _storageService.getSessionRollNumber();
+    if (sessionRoll != null && sessionRoll.isNotEmpty) {
+      _currentStudent = _accounts.where(
+        (a) => a.rollNumber.trim().toLowerCase() == sessionRoll.toLowerCase(),
+      ).firstOrNull;
+    } else {
+      _currentStudent = _storageService.getStudent();
+    }
     notifyListeners();
   }
 
-  /// Register a brand new student account with validation and duplicate prevention
+  /// Register a brand new student account with validation and duplicate prevention.
+  /// Passwords are never stored on the Student profile model.
   Future<Student> registerStudentAccount({
     required String name,
     required String email,
@@ -69,6 +78,7 @@ class ProfileProvider extends ChangeNotifier {
       );
     }
 
+    // Create pure profile model WITHOUT password
     final newStudent = Student(
       name: name.trim(),
       email: email.trim(),
@@ -76,18 +86,21 @@ class ProfileProvider extends ChangeNotifier {
       department: department,
       yearOfStudy: yearOfStudy,
       phone: phone.trim(),
-      password: password,
       avatarUrl: avatarUrl ??
           'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
     );
 
+    // Save salted password hash in isolated credentials store
+    await _storageService.saveStudentCredential(rollNumber, password);
+
     _accounts.add(newStudent);
     await _storageService.saveStudentAccounts(_accounts);
 
-    // Auto login
+    // Set active student session
     _currentStudent = newStudent;
     _userRole = 'student';
     await _storageService.saveStudent(newStudent);
+    await _storageService.saveSessionRollNumber(rollNumber);
     await _storageService.saveUserRole('student');
 
     notifyListeners();
@@ -111,9 +124,9 @@ class ProfileProvider extends ChangeNotifier {
       );
     }
 
-    if (account.password != null &&
-        account.password!.isNotEmpty &&
-        account.password != password) {
+    // Verify password against salted credentials store (never plaintext in student model)
+    final isValid = _storageService.verifyStudentCredential(account.rollNumber, password);
+    if (!isValid) {
       throw AuthException(
         'Incorrect password. Please verify and try again.',
       );
@@ -122,19 +135,21 @@ class ProfileProvider extends ChangeNotifier {
     _currentStudent = account;
     _userRole = 'student';
     await _storageService.saveStudent(account);
+    await _storageService.saveSessionRollNumber(account.rollNumber);
     await _storageService.saveUserRole('student');
 
     notifyListeners();
     return account;
   }
 
-  /// Direct quick-login for sample student presets
+  /// Direct quick-login for sample student presets (e.g. Alex Chen, Sophia Patel)
   Future<void> login(Student student) async {
     _currentStudent = student;
     _userRole = 'student';
     await _storageService.registerOrUpdateStudentAccount(student);
     _accounts = _storageService.getStudentAccounts();
     await _storageService.saveStudent(student);
+    await _storageService.saveSessionRollNumber(student.rollNumber);
     await _storageService.saveUserRole('student');
     notifyListeners();
   }
@@ -148,9 +163,10 @@ class ProfileProvider extends ChangeNotifier {
     if (normEmail == AppConstants.demoOrganizerEmail.toLowerCase() &&
         password == AppConstants.demoOrganizerPassword) {
       _userRole = 'organizer';
-      _currentStudent = null; // Organizers are not student profiles
+      _currentStudent = null; // Organizers are administrative roles, not student profiles
       await _storageService.saveUserRole('organizer');
       await _storageService.clearStudent();
+      await _storageService.clearSessionRollNumber();
       notifyListeners();
       return true;
     } else {
@@ -160,12 +176,13 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  /// Quick one-click organizer demo login for evaluators
+  /// Explicit demo organizer login for academic evaluators
   Future<void> loginOrganizerDemo() async {
     _userRole = 'organizer';
     _currentStudent = null;
     await _storageService.saveUserRole('organizer');
     await _storageService.clearStudent();
+    await _storageService.clearSessionRollNumber();
     notifyListeners();
   }
 
@@ -178,11 +195,12 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Full logout clearing active user session and role
+  /// Full logout clearing active user session and credentials from memory
   Future<void> logout() async {
     _currentStudent = null;
     _userRole = 'student';
     await _storageService.clearStudent();
+    await _storageService.clearSessionRollNumber();
     await _storageService.clearUserRole();
     notifyListeners();
   }

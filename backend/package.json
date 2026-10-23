@@ -1,0 +1,17 @@
+{
+  "name": "campusverse-backend",
+  "version": "1.0.0",
+  "description": "CampusVerse Collegiate Event Management REST API Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["flutter", "event-management", "rest-api", "express"],
+  "author": "CampusVerse Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

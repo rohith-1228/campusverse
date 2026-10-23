@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
 import '../models/app_notification.dart';
@@ -14,6 +16,84 @@ class LocalStorageService {
   static Future<LocalStorageService> init() async {
     final prefs = await SharedPreferences.getInstance();
     return LocalStorageService(prefs);
+  }
+
+  // ---------------- AUTHENTICATION & CREDENTIAL STORE ----------------
+  static String hashPassword(String password, String salt) {
+    final bytes = utf8.encode('$salt:$password:campusverse_academic_salt_2026');
+    return sha256.convert(bytes).toString();
+  }
+
+  static String _generateSalt() {
+    final rand = Random.secure();
+    final bytes = List<int>.generate(16, (_) => rand.nextInt(256));
+    return base64UrlEncode(bytes);
+  }
+
+  Map<String, Map<String, String>> _getCredentialsMap() {
+    final jsonStr = _prefs.getString(AppConstants.keyAuthCredentials);
+    if (jsonStr == null || jsonStr.isEmpty) return {};
+    try {
+      final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
+      final map = <String, Map<String, String>>{};
+      decoded.forEach((key, val) {
+        if (val is Map) {
+          map[key.toLowerCase()] = {
+            'salt': val['salt']?.toString() ?? '',
+            'hash': val['hash']?.toString() ?? '',
+          };
+        }
+      });
+      return map;
+    } catch (_) {
+      return {};
+    }
+  }
+
+  Future<void> saveStudentCredential(String rollNumber, String password) async {
+    final map = _getCredentialsMap();
+    final salt = _generateSalt();
+    final hash = hashPassword(password, salt);
+    map[rollNumber.trim().toLowerCase()] = {
+      'salt': salt,
+      'hash': hash,
+    };
+    await _prefs.setString(AppConstants.keyAuthCredentials, jsonEncode(map));
+  }
+
+  bool verifyStudentCredential(String rollNumber, String inputPassword) {
+    final normRoll = rollNumber.trim().toLowerCase();
+    final map = _getCredentialsMap();
+    final cred = map[normRoll];
+
+    if (cred != null) {
+      final salt = cred['salt'] ?? '';
+      final expectedHash = cred['hash'] ?? '';
+      final inputHash = hashPassword(inputPassword, salt);
+      return inputHash == expectedHash;
+    }
+
+    // Default sample presets fallback for academic demonstration
+    final isPreset = Student.samplePresets.any(
+      (s) => s.rollNumber.trim().toLowerCase() == normRoll,
+    );
+    if (isPreset) {
+      return inputPassword == AppConstants.demoStudentDefaultPassword;
+    }
+
+    return false;
+  }
+
+  Future<bool> saveSessionRollNumber(String rollNumber) async {
+    return _prefs.setString(AppConstants.keySessionRollNumber, rollNumber.trim().toLowerCase());
+  }
+
+  String? getSessionRollNumber() {
+    return _prefs.getString(AppConstants.keySessionRollNumber);
+  }
+
+  Future<bool> clearSessionRollNumber() async {
+    return _prefs.remove(AppConstants.keySessionRollNumber);
   }
 
   // ---------------- STUDENT PROFILE & ACCOUNTS ----------------

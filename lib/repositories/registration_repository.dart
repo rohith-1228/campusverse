@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:uuid/uuid.dart';
 import '../models/event.dart';
 import '../models/registration.dart';
 import '../models/student.dart';
@@ -107,8 +107,15 @@ class RegistrationRepository {
       );
     }
 
-    final randId = 1000 + Random().nextInt(9000);
-    final regId = 'CV-${DateTime.now().year}-$randId';
+    final list = _storageService.getRegistrations();
+
+    // Generate collision-resistant unique registration identifier
+    String regId;
+    do {
+      final shortUuid = const Uuid().v4().substring(0, 8).toUpperCase();
+      regId = 'CV-${DateTime.now().year}-$shortUuid';
+    } while (list.any((r) => r.registrationId.toUpperCase() == regId));
+
     // Compact, standard verification payload
     final qrData = 'CAMPUSVERSE:TICKET:$regId';
 
@@ -127,7 +134,6 @@ class RegistrationRepository {
       qrCodeData: qrData,
     );
 
-    final list = _storageService.getRegistrations();
     list.insert(0, registration);
     await _storageService.saveRegistrations(list);
 

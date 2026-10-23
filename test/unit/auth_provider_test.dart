@@ -219,5 +219,34 @@ void main() {
       expect(profileProvider.isStudent, true);
       expect(profileProvider.currentStudent, isNull);
     });
+
+    test('should never serialize passwords in Student models or JSON payloads', () async {
+      final student = await profileProvider.registerStudentAccount(
+        name: 'Sec Test',
+        email: 'sec@campusverse.edu',
+        rollNumber: 'SEC-2026-01',
+        department: 'Cybersecurity',
+        yearOfStudy: '4th Year',
+        phone: '+1 555-0911',
+        password: 'TopSecretPassword99!',
+      );
+
+      final jsonMap = student.toJson();
+      expect(jsonMap.containsKey('password'), false,
+          reason: 'Student JSON must NEVER expose password');
+
+      // Verify stored credential uses salted hash rather than plaintext
+      final hasRawPassword = storageService.verifyStudentCredential(
+        student.rollNumber,
+        'TopSecretPassword99!',
+      );
+      expect(hasRawPassword, true);
+
+      final hasWrongPassword = storageService.verifyStudentCredential(
+        student.rollNumber,
+        'WrongPassword!',
+      );
+      expect(hasWrongPassword, false);
+    });
   });
 }

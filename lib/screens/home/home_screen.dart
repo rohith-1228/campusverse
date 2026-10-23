@@ -131,16 +131,67 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 2),
-                                Text(
-                                  student?.department ?? 'CampusVerse Member',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: isDark
-                                        ? AppColors.textSecondaryDark
-                                        : AppColors.textSecondaryLight,
-                                  ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        student?.department ?? 'CampusVerse Member',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: isDark
+                                              ? AppColors.textSecondaryDark
+                                              : AppColors.textSecondaryLight,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    InkWell(
+                                      onTap: () => Navigator.pushNamed(context, '/developer-settings'),
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: eventProvider.useApiBackend
+                                              ? AppColors.success.withAlpha((0.2 * 255).round())
+                                              : AppColors.electricBlue.withAlpha((0.15 * 255).round()),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: eventProvider.useApiBackend
+                                                ? AppColors.success
+                                                : AppColors.electricBlue,
+                                            width: 0.8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              eventProvider.useApiBackend
+                                                  ? Icons.cloud_done_rounded
+                                                  : Icons.storage_rounded,
+                                              size: 10,
+                                              color: eventProvider.useApiBackend
+                                                  ? AppColors.success
+                                                  : AppColors.electricBlue,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              eventProvider.useApiBackend ? 'LIVE API' : 'MOCK MODE',
+                                              style: TextStyle(
+                                                fontSize: 9.5,
+                                                fontWeight: FontWeight.w800,
+                                                color: eventProvider.useApiBackend
+                                                    ? AppColors.success
+                                                    : AppColors.electricBlue,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

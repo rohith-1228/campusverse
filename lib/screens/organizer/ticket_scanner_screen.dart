@@ -126,6 +126,37 @@ class _TicketScannerScreenState extends State<TicketScannerScreen>
       ),
       body: Column(
         children: [
+          // Operational Scope Indicator
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: eventProvider.useApiBackend
+                ? AppColors.success.withAlpha((0.15 * 255).round())
+                : AppColors.warning.withAlpha((0.15 * 255).round()),
+            child: Row(
+              children: [
+                Icon(
+                  eventProvider.useApiBackend ? Icons.cloud_done_rounded : Icons.storage_rounded,
+                  size: 16,
+                  color: eventProvider.useApiBackend ? AppColors.success : AppColors.warning,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    eventProvider.useApiBackend
+                        ? 'Verification Scope: Live REST API (Shared cross-device records)'
+                        : 'Verification Scope: Local Demo Storage (Records on this browser/device only)',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                      color: eventProvider.useApiBackend ? AppColors.success : AppColors.warning,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Event Filter Dropdown Bar
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

@@ -89,7 +89,7 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
   void _applyPresetStudent(Student preset) {
     setState(() {
       _loginIdentifierController.text = preset.rollNumber;
-      _loginPasswordController.text = preset.password ?? 'Password@123';
+      _loginPasswordController.text = AppConstants.demoStudentDefaultPassword;
     });
   }
 
@@ -561,7 +561,30 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
                       color: Colors.white.withAlpha((0.75 * 255).round()),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withAlpha((0.15 * 255).round()),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: AppColors.primaryLight.withAlpha((0.3 * 255).round()),
+                      ),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.shield_outlined, size: 16, color: AppColors.primaryLight),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Academic Demo Mode: Passwords are salted & hashed locally on this device. Do not enter real sensitive passwords.',
+                            style: TextStyle(fontSize: 10.5, color: Colors.white70),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
 
                   // Avatar Picker
                   Text(
@@ -932,12 +955,20 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
                 ),
                 const SizedBox(height: 12),
 
-                // Quick 1-Click Demo Login Button
-                OutlinedButton.icon(
-                  onPressed: _isLoading ? null : _quickOrganizerDemoLogin,
-                  icon: const Icon(Icons.flash_on_rounded, size: 18),
-                  label: const Text('1-Click Organizer Quick Demo Login'),
-                ),
+                // Quick 1-Click Demo Login Button (Gated for Academic Evaluators)
+                if (AppConstants.isDemoEnvironment) ...[
+                  OutlinedButton.icon(
+                    onPressed: _isLoading ? null : _quickOrganizerDemoLogin,
+                    icon: const Icon(Icons.flash_on_rounded, size: 18),
+                    label: const Text('1-Click Organizer Quick Demo Login'),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Academic Evaluation Mode: Demo credentials provided for lab testing. In production, organizers authenticate via institutional SSO.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 10.5, color: Colors.grey),
+                  ),
+                ],
               ],
             ),
           ),

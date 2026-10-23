@@ -129,6 +129,61 @@ class ApiService {
     }
   }
 
+  /// Verify ticket atomically via REST API
+  Future<Map<String, dynamic>> verifyTicketRemote(String rawInput, {String? targetEventId}) async {
+    final uri = Uri.parse('$baseUrl/tickets/verify');
+    try {
+      final response = await _client
+          .post(
+            uri,
+            headers: _headers,
+            body: jsonEncode({
+              'rawInput': rawInput,
+              if (targetEventId != null) 'targetEventId': targetEventId,
+            }),
+          )
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        throw ApiException(
+          'Remote ticket verification failed (${response.statusCode}): ${response.body}',
+          response.statusCode,
+        );
+      }
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error verifying ticket remotely: $e');
+    }
+  }
+
+  /// Check in ticket atomically via REST API
+  Future<Map<String, dynamic>> checkInTicketRemote(String registrationId) async {
+    final uri = Uri.parse('$baseUrl/tickets/check-in');
+    try {
+      final response = await _client
+          .post(
+            uri,
+            headers: _headers,
+            body: jsonEncode({'registrationId': registrationId}),
+          )
+          .timeout(AppConstants.apiTimeout);
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        throw ApiException(
+          'Remote gate check-in failed (${response.statusCode}): ${response.body}',
+          response.statusCode,
+        );
+      }
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error submitting remote check-in: $e');
+    }
+  }
+
   void dispose() {
     _client.close();
   }
