@@ -39,7 +39,8 @@ jobs:
 
       - name: Build Flutter Web
         run: |
-          flutter build web --release --base-href "/flutter-project/"
+          REPO_NAME="${{ github.event.repository.name }}"
+          flutter build web --release --base-href "/$REPO_NAME/"
           cp build/web/index.html build/web/404.html
 
       - name: Upload Pages Artifact
