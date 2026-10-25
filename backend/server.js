@@ -21,11 +21,11 @@ const db = {
   users: [
     {
       id: 'usr-org-1',
-      name: 'Prof. Marcus Vance',
-      email: 'organizer@campusverse.edu',
+      name: 'CampusVerse Admin',
+      email: 'admin@gmail.com',
       role: 'organizer',
-      salt: 'salt_org_demo_2026',
-      passwordHash: hashPassword('Organizer@2026', 'salt_org_demo_2026')
+      salt: 'salt_admin_demo',
+      passwordHash: hashPassword('admin', 'salt_admin_demo')
     },
     {
       id: 'usr-stu-1',

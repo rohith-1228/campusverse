@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/registration.dart';
 import '../../providers/event_provider.dart';
+import '../../providers/profile_provider.dart';
 import '../../providers/registration_provider.dart';
 import '../../repositories/registration_repository.dart';
 import '../../widgets/glass_card.dart';
+import '../auth/demo_login_screen.dart';
 
 class TicketScannerScreen extends StatefulWidget {
   final String? initialEventId;
@@ -46,6 +48,7 @@ class _TicketScannerScreenState extends State<TicketScannerScreen>
 
   void _verifyTicketInput(String input) {
     if (input.trim().isEmpty) return;
+    if (!context.read<ProfileProvider>().isOrganizer) return;
 
     final regProvider = context.read<RegistrationProvider>();
     final result = regProvider.verifyTicket(
@@ -59,6 +62,15 @@ class _TicketScannerScreenState extends State<TicketScannerScreen>
   }
 
   Future<void> _confirmCheckIn(Registration registration) async {
+    if (!context.read<ProfileProvider>().isOrganizer) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unauthorized action: Organizer privilege required to check in tickets.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
     setState(() => _isProcessingCheckIn = true);
     try {
       final updated = await context
@@ -102,10 +114,53 @@ class _TicketScannerScreenState extends State<TicketScannerScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final profileProvider = context.watch<ProfileProvider>();
     final eventProvider = context.watch<EventProvider>();
     final regProvider = context.watch<RegistrationProvider>();
     final events = eventProvider.allEvents;
     final allRegistrations = regProvider.registrations;
+
+    // Role-based route guard: Restrict ticket scanning to authorized organizers
+    if (!profileProvider.isOrganizer) {
+      return Scaffold(
+        backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
+        appBar: AppBar(title: const Text('Access Denied')),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.gpp_bad_rounded, size: 64, color: AppColors.error),
+                const SizedBox(height: 18),
+                const Text(
+                  'Organizer Privilege Required',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Student accounts cannot scan QR tickets or authorize gate admission. Please log in with an Organizer account to proceed.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13.5, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (_) => const DemoLoginScreen(initialTabIndex: 1)),
+                      (route) => false,
+                    );
+                  },
+                  icon: const Icon(Icons.login_rounded),
+                  label: const Text('Go to Organizer Login'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,

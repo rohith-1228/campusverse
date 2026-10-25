@@ -154,7 +154,7 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Organizer authentication with academic demo credentials
+  /// Organizer authentication with local demo credentials
   Future<bool> loginOrganizer({
     required String email,
     required String password,
@@ -171,7 +171,7 @@ class ProfileProvider extends ChangeNotifier {
       return true;
     } else {
       throw AuthException(
-        'Invalid organizer credentials. For academic evaluation, use: ${AppConstants.demoOrganizerEmail} / ${AppConstants.demoOrganizerPassword}',
+        'Invalid organizer credentials. Please check your email and password.',
       );
     }
   }

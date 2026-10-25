@@ -190,17 +190,71 @@ void main() {
       expect(success, true);
       expect(profileProvider.isOrganizer, true);
       expect(profileProvider.isStudent, false);
+      expect(profileProvider.userRole, 'organizer');
       expect(profileProvider.currentStudent, isNull);
     });
 
-    test('should reject organizer login with invalid credentials', () async {
+    test('should authenticate organizer case-insensitively for email', () async {
+      final success = await profileProvider.loginOrganizer(
+        email: AppConstants.demoOrganizerEmail.toUpperCase(),
+        password: AppConstants.demoOrganizerPassword,
+      );
+
+      expect(success, true);
+      expect(profileProvider.isOrganizer, true);
+    });
+
+    test('should reject organizer login with incorrect password and not leak secrets in error message', () async {
+      try {
+        await profileProvider.loginOrganizer(
+          email: AppConstants.demoOrganizerEmail,
+          password: 'IncorrectPassword',
+        );
+        fail('Expected AuthException was not thrown');
+      } on AuthException catch (e) {
+        expect(e.message, contains('Invalid organizer credentials'));
+        expect(e.message.contains('IncorrectPassword'), false,
+            reason: 'Error message must never echo the input password');
+      }
+    });
+
+    test('should reject organizer login with unknown email', () async {
       expect(
         () => profileProvider.loginOrganizer(
-          email: 'fake.organizer@campusverse.edu',
-          password: 'WrongPassword',
+          email: 'unknown.user@example.com',
+          password: AppConstants.demoOrganizerPassword,
         ),
         throwsA(isA<AuthException>()),
       );
+    });
+
+    test('should enforce strict separation between student and organizer identities', () async {
+      // 1. Log in student
+      await profileProvider.registerStudentAccount(
+        name: 'Student Isolation',
+        email: 'isolation@campusverse.edu',
+        rollNumber: 'SEC-2026-99',
+        department: 'Computer Science',
+        yearOfStudy: '3rd Year',
+        phone: '+1 555-0999',
+        password: 'Password123!',
+      );
+
+      expect(profileProvider.isStudent, true);
+      expect(profileProvider.isOrganizer, false);
+      expect(profileProvider.userRole, 'student');
+      expect(profileProvider.currentStudent?.rollNumber, 'SEC-2026-99');
+
+      // 2. Switch to organizer
+      await profileProvider.loginOrganizer(
+        email: AppConstants.demoOrganizerEmail,
+        password: AppConstants.demoOrganizerPassword,
+      );
+
+      expect(profileProvider.isOrganizer, true);
+      expect(profileProvider.isStudent, false);
+      expect(profileProvider.userRole, 'organizer');
+      expect(profileProvider.currentStudent, isNull);
     });
 
     test('should support 1-click organizer demo login for evaluators', () async {

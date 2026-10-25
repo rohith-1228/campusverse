@@ -99,7 +99,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Organizer Dashboard'), findsOneWidget);
-      expect(find.textContaining('Prof. Marcus Vance'), findsOneWidget);
+      expect(find.textContaining('CampusVerse Admin'), findsOneWidget);
       expect(find.text('Total Events'), findsOneWidget);
       expect(find.text('Upcoming'), findsOneWidget);
       expect(find.text('Signups'), findsOneWidget);
@@ -109,7 +109,32 @@ void main() {
       expect(find.textContaining('Managed Campus Events'), findsOneWidget);
     });
 
-    testWidgets('ticket scanner manual lookup rejects non-existent ticket',
+    testWidgets('denies student account access to TicketScannerScreen',
+        (WidgetTester tester) async {
+      // Ensure user role is student
+      await storageService.saveUserRole('student');
+
+      final app = await buildTestApp(
+        homeWidget: const TicketScannerScreen(),
+      );
+
+      await tester.pumpWidget(app);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Access Denied'), findsOneWidget);
+      expect(find.text('Organizer Privilege Required'), findsOneWidget);
+      expect(
+        find.textContaining('Student accounts cannot scan QR tickets or authorize gate admission'),
+        findsOneWidget,
+      );
+      expect(find.text('Go to Organizer Login'), findsOneWidget);
+
+      // Verify that scanner and manual lookup tabs are NOT rendered
+      expect(find.text('Manual / Demo'), findsNothing);
+      expect(find.text('Live Camera'), findsNothing);
+    });
+
+    testWidgets('ticket scanner manual lookup rejects non-existent ticket for organizer',
         (WidgetTester tester) async {
       await profileProvider.loginOrganizerDemo();
 

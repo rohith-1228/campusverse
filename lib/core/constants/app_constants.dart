@@ -52,11 +52,22 @@ class AppConstants {
   static const String keyUseApiBackend = 'cv_use_api_backend';
   static const String keyCustomEvents = 'cv_custom_events';
 
-  // Demo Environment Flags & Credentials
+  // =========================================================================
+  // Isolated Local Demo Environment Flags & Mock Credentials
+  //
+  // SECURITY NOTICE:
+  // These constants are strictly for local offline demonstration, manual testing,
+  // and automated test suites. They DO NOT provide secure production authentication.
+  // In a production environment, authentication MUST be handled by a secure
+  // backend or institutional Identity Provider (OAuth2/OIDC/SSO) with server-side
+  // session validation and role-based access control (RBAC). Client-side Dart
+  // constants must never be treated as secrets or privileged production credentials.
+  // =========================================================================
   static const bool isDemoEnvironment = true;
   static const String demoStudentDefaultPassword = 'Password@123';
-  static const String demoOrganizerEmail = 'organizer@campusverse.edu';
-  static const String demoOrganizerPassword = 'Organizer@2026';
-  static const String demoOrganizerName = 'Prof. Marcus Vance';
-  static const String demoOrganizerRoleTitle = 'Faculty Event Convener';
+  static const String demoOrganizerEmail = 'admin@gmail.com';
+  static const String demoOrganizerPassword = 'admin';
+  static const String demoOrganizerName = 'CampusVerse Admin';
+  static const String demoOrganizerRoleTitle = 'Admin';
 }
+

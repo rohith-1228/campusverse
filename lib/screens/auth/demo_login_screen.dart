@@ -840,7 +840,7 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
                       color: AppColors.secondaryLight, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    'Academic Evaluation Credentials',
+                    'Local Demo / Testing Environment',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -850,9 +850,9 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
                 ],
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Email: organizer@campusverse.edu\nPassword: Organizer@2026',
-                style: TextStyle(
+              Text(
+                'Email: ${AppConstants.demoOrganizerEmail}\nPassword: ${AppConstants.demoOrganizerPassword}\nRole: ${AppConstants.demoOrganizerRoleTitle}',
+                style: const TextStyle(
                   color: AppColors.secondaryLight,
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
@@ -861,7 +861,7 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
               ),
               const SizedBox(height: 6),
               Text(
-                'Demonstration Role: Grants event creation, attendee rosters, and ticket check-in capabilities.',
+                'Isolated Local Demo: Grants mock event creation, attendee rosters, and ticket check-in capabilities for local evaluation. Not connected to a production backend.',
                 style: TextStyle(
                   color: Colors.white.withAlpha((0.8 * 255).round()),
                   fontSize: 11.5,
@@ -955,16 +955,16 @@ class _DemoLoginScreenState extends State<DemoLoginScreen>
                 ),
                 const SizedBox(height: 12),
 
-                // Quick 1-Click Demo Login Button (Gated for Academic Evaluators)
+                // Quick 1-Click Demo Login Button (Gated for Local Demo / Evaluators)
                 if (AppConstants.isDemoEnvironment) ...[
                   OutlinedButton.icon(
                     onPressed: _isLoading ? null : _quickOrganizerDemoLogin,
                     icon: const Icon(Icons.flash_on_rounded, size: 18),
-                    label: const Text('1-Click Organizer Quick Demo Login'),
+                    label: const Text('1-Click Admin Quick Demo Login'),
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Academic Evaluation Mode: Demo credentials provided for lab testing. In production, organizers authenticate via institutional SSO.',
+                    'Local Demo Mode: Mock admin login for evaluation purposes. In production, administrators authenticate via secure institutional SSO / OAuth2.',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 10.5, color: Colors.grey),
                   ),

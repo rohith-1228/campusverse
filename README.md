@@ -111,7 +111,7 @@ A rigorous security audit was conducted on the authentication and profile handli
 
 | Role | Email / Identifier | Password | Access Capabilities |
 |---|---|---|---|
-| **Organizer** | `organizer@campusverse.edu` | `Organizer@2026` | Event creation, editing, attendee lists, QR gate scanning & check-in |
+| **Admin (Organizer)** | `admin@gmail.com` | `admin` | Event creation, editing, attendee lists, QR gate scanning & check-in (Local Demo Mode) |
 | **Sample Student 1** | `alex.chen@campusverse.edu` (Roll: `CS-2023-042`) | `Password@123` | Event browsing, registration, personal pass & QR ticket |
 | **Sample Student 2** | `sophia.patel@campusverse.edu` (Roll: `EC-2024-019`) | `Password@123` | Event browsing, registration, personal pass & QR ticket |
 | **Sample Student 3** | `david.m@campusverse.edu` (Roll: `IT-2022-088`) | `Password@123` | Event browsing, registration, personal pass & QR ticket |
@@ -444,13 +444,13 @@ Follow these workflows to evaluate all implemented features:
 5. Navigate to **My Events** (bottom navigation tab 3).
 6. Verify that the registered event appears under the **Registered** tab, and tap to reopen the digital ticket pass.
 
-### Workflow 3: Dedicated Organizer Login & Role Guards
+### Workflow 3: Dedicated Admin / Organizer Login & Role Guards
 1. Log out of the student account via **Profile** → **Log Out**.
 2. Select the **Organizer** tab at the top of the Login screen.
-3. Observe the displayed demo credentials (`organizer@campusverse.edu` / `Organizer@2026`).
-4. Tap **"1-Click Organizer Demo Login"** (or enter the credentials and tap "Sign In as Organizer").
+3. Observe the displayed local demo credentials (`admin@gmail.com` / `admin`).
+4. Tap **"1-Click Admin Quick Demo Login"** (or enter the credentials and tap "Enter Organizer Dashboard").
 5. Observe the **Organizer Dashboard**:
-   - Welcome banner: `Authenticated: Prof. Marcus Vance (Faculty Event Convener)`.
+   - Welcome banner: `Authenticated: CampusVerse Admin (Admin)`.
    - Statistics: Total Events, Upcoming, Signups, Checked In.
    - List of managed events with live signup counts.
    - Live Attendee Roster with instant search and filter controls.
