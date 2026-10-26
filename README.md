@@ -29,8 +29,9 @@
 14. [Running Flutter Analysis & Test Suite](#14-running-flutter-analysis--test-suite)
 15. [Step-by-Step QA & Evaluation Workflows](#15-step-by-step-qa--evaluation-workflows)
 16. [GitHub Pages Deployment](#16-github-pages-deployment)
-17. [Mandatory Syllabus Mapping (Weeks 1 to 9)](#17-mandatory-syllabus-mapping-weeks-1-to-9)
-18. [Academic Scope, Security & Deployment Disclosures](#18-academic-scope-security--deployment-disclosures)
+17. [Android APK Build & Download](#17-android-apk-build--download)
+18. [Mandatory Syllabus Mapping (Weeks 1 to 9)](#18-mandatory-syllabus-mapping-weeks-1-to-9)
+19. [Academic Scope, Security & Deployment Disclosures](#19-academic-scope-security--deployment-disclosures)
 
 ---
 
@@ -499,7 +500,28 @@ The application is deployed continuously to GitHub Pages via automated GitHub Ac
 
 ---
 
-## 17. Mandatory Syllabus Mapping (Weeks 1 to 9)
+## 17. Android APK Build & Download
+
+CampusVerse is automatically built into a production Android APK via GitHub Actions:
+- **Build Workflow**: [`.github/workflows/build-apk.yml`](.github/workflows/build-apk.yml)
+- **Direct APK Download**: Available under [GitHub Releases (`latest-apk`)](https://github.com/rohith-1228/campusverse/releases/tag/latest-apk)
+- **Workflow Run Artifacts**: Available under [GitHub Actions](https://github.com/rohith-1228/campusverse/actions)
+
+### Installing on Android
+1. Open [github.com/rohith-1228/campusverse/releases](https://github.com/rohith-1228/campusverse/releases) on your Android phone's web browser.
+2. Tap on `CampusVerse-release.apk` to download.
+3. Once downloaded, tap the file in your notification bar or Downloads folder to install.
+4. If Android displays a prompt saying *"For your security, your phone is not allowed to install unknown apps from this source"*, tap **Settings** and enable **"Allow from this source"**.
+
+### Triggering Manual APK Build
+You can build a new APK at any time without needing Android Studio installed locally:
+1. Go to the [GitHub Actions tab](https://github.com/rohith-1228/campusverse/actions).
+2. Click **"Build & Release Android APK"** from the left sidebar.
+3. Click the **"Run workflow"** button, select the build type (`release` or `debug`), and click **"Run workflow"**.
+
+---
+
+## 18. Mandatory Syllabus Mapping (Weeks 1 to 9)
 
 This application satisfies every concept in the academic Flutter curriculum:
 
@@ -517,7 +539,7 @@ This application satisfies every concept in the academic Flutter curriculum:
 
 ---
 
-## 18. Academic Scope, Security & Deployment Disclosures
+## 19. Academic Scope, Security & Deployment Disclosures
 
 CampusVerse is engineered specifically for academic project evaluations, code reviews, and project expos:
 
